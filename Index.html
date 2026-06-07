@@ -576,6 +576,8 @@ const TRANSLATIONS={
     tip_match_title:"Play your first match", tip_match_sub:"Take your team out for a game",
     tip_friends_title:"Challenge your friends", tip_friends_sub:"Create or join a live friends league",
     screen_account_title:"Account",
+    feedback_header:"Send feedback", feedback_desc:"Spotted a bug or have an idea? Let me know.", feedback_ph:"Your feedback…", feedback_send:"Send feedback",
+    notif_feedback_sent:"Thanks for the feedback! 🙏", notif_feedback_empty:"Write a little more first", notif_feedback_failed:"Couldn't send — try again",
     acc_save_title:"Save your progress",
     acc_save_desc:"Create an account so your cards and points are never lost — even if your browser clears. Just a username and a PIN, no email needed.",
     acc_create_header:"Create account",
@@ -717,6 +719,8 @@ const TRANSLATIONS={
     tip_match_title:"Spil din første kamp", tip_match_sub:"Tag dit hold med ud til en kamp",
     tip_friends_title:"Udfordr dine venner", tip_friends_sub:"Opret eller deltag i en venneliga",
     screen_account_title:"Konto",
+    feedback_header:"Send feedback", feedback_desc:"Fundet en fejl eller har en idé? Sig til.", feedback_ph:"Din feedback…", feedback_send:"Send feedback",
+    notif_feedback_sent:"Tak for din feedback! 🙏", notif_feedback_empty:"Skriv lidt mere først", notif_feedback_failed:"Kunne ikke sendes — prøv igen",
     acc_save_title:"Gem dine fremskridt",
     acc_save_desc:"Opret en konto, så dine kort og point aldrig går tabt — selv hvis din browser ryddes. Kun et brugernavn og en PIN, ingen e-mail nødvendig.",
     acc_create_header:"Opret konto",
@@ -857,6 +861,8 @@ const TRANSLATIONS={
     tip_match_title:"Juega tu primer partido", tip_match_sub:"Lleva a tu equipo a jugar",
     tip_friends_title:"Desafía a tus amigos", tip_friends_sub:"Crea o únete a una liga de amigos",
     screen_account_title:"Cuenta",
+    feedback_header:"Enviar comentarios", feedback_desc:"¿Has visto un fallo o tienes una idea? Cuéntamelo.", feedback_ph:"Tus comentarios…", feedback_send:"Enviar comentarios",
+    notif_feedback_sent:"¡Gracias por tus comentarios! 🙏", notif_feedback_empty:"Escribe un poco más primero", notif_feedback_failed:"No se pudo enviar — inténtalo de nuevo",
     acc_save_title:"Guarda tu progreso",
     acc_save_desc:"Crea una cuenta para que tus cartas y puntos nunca se pierdan, incluso si se borra tu navegador. Solo un nombre de usuario y un PIN, sin correo.",
     acc_create_header:"Crear cuenta",
@@ -4296,6 +4302,31 @@ async function driveLiveMatch(){
 // ACCOUNTS — username + PIN, auto-login on known devices
 // ══════════════════════════════════════════════════════════
 const ACC_INPUT="width:100%;padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text2);font-size:14px;font-family:var(--font-body);box-sizing:border-box;outline:none;";
+
+const feedbackCard=()=>`
+    <div class="glass-card" style="margin-top:24px;">
+      <div class="sec-label" style="margin:0 0 8px;">${t('feedback_header')}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">${t('feedback_desc')}</div>
+      <textarea id="fb-msg" maxlength="2000" rows="4" placeholder="${t('feedback_ph')}" style="${ACC_INPUT}resize:vertical;min-height:84px;line-height:1.4;"></textarea>
+      <button class="btn-ghost full accent" onclick="submitFeedback()" style="width:100%;margin-top:10px;">${t('feedback_send')}</button>
+    </div>`;
+
+async function submitFeedback(){
+  const el=document.getElementById("fb-msg");
+  const msg=(el&&el.value||"").trim();
+  if(msg.length<3){notify(t('notif_feedback_empty'),"#f87171");return;}
+  try{
+    const res=await fetch("/.netlify/functions/feedback",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:msg,username:state.account?.username||null,lang:_lang,screen:state.screen})
+    });
+    if(!res.ok)throw new Error("send failed");
+    if(el)el.value="";
+    notify(t('notif_feedback_sent'),"var(--accent)");
+  }catch(e){
+    notify(t('notif_feedback_failed'),"#f87171");
+  }
+}
 let _acctPushTimer=null;
 // Block cloud saves until auto-login has resolved, so a wiped local save can't
 // clobber good cloud data before we've had a chance to download it.
@@ -4412,6 +4443,7 @@ function renderAccount(){
         <input id="acc-del-pin" type="text" inputmode="numeric" autocomplete="off" name="fc-pin-del" maxlength="8" placeholder="${t('acc_confirm_pin_ph')}" style="${ACC_INPUT}-webkit-text-security:disc;"/>
         <button onclick="confirmDelete()" style="width:100%;margin-top:10px;padding:11px;border-radius:10px;border:1px solid rgba(248,113,113,.4);background:rgba(248,113,113,.1);color:#f87171;font-weight:600;cursor:pointer;font-family:var(--font-body);">${t('acc_delete_btn')}</button>
       </div>
+      ${feedbackCard()}
     </div>`;
   }
   const hasProgress=state.collection.length||state.points!==500||state.matchHistory.length;
@@ -4441,6 +4473,8 @@ function renderAccount(){
     <div style="text-align:center;margin-top:16px;">
       <button onclick="navTo('home')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:var(--font-body);text-decoration:underline;">${t('acc_guest')}</button>
     </div>
+
+    ${feedbackCard()}
   </div>`;
 }
 
