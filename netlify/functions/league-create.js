@@ -146,8 +146,11 @@ exports.handler = async (event) => {
 function generateFixtures(teams) {
   const fixtures = [];
   const TOTAL_WEEKS = 10;
+  // Double round-robin: every pair meets twice (home & away) so a small
+  // league still has several games before the title is decided.
   for (let i = 0; i < teams.length; i++) {
-    for (let j = i + 1; j < teams.length; j++) {
+    for (let j = 0; j < teams.length; j++) {
+      if (i === j) continue;
       fixtures.push({
         home: teams[i].name,
         away: teams[j].name,

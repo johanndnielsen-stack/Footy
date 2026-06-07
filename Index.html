@@ -611,6 +611,7 @@ const TRANSLATIONS={
     hero_pos2:"💪 One place off the top!", hero_pos3:"⭐ On the podium!", hero_posn:"{n} places from a bonus!",
     sec_next_fixture:"Next fixture", lbl_vs:"vs", lbl_week:"Week {w}", lbl_you:"You",
     fl_waiting:"⏳ Waiting for {opp} to accept…", btn_cancel_challenge:"✕ Cancel challenge", btn_challenge_opp:"⚔️ Challenge opponent",
+    fl_need_players_title:"Waiting for players", fl_need_players:"Share your invite code above — the season kicks off once a friend joins.",
     season_champions:"Champions!", season_podium:"Podium finish!", season_complete:"Season complete!",
     season_finished:"Finished {medal} place", btn_start_new_season:"🔄 Start New Season", btn_new_season:"🔄 New Season",
     sec_recent_results:"Recent results", btn_trivia:"⚽ Trivia", btn_leave_league:"Leave league",
@@ -748,6 +749,7 @@ const TRANSLATIONS={
     hero_pos2:"💪 Én plads fra toppen!", hero_pos3:"⭐ På podiet!", hero_posn:"{n} pladser fra en bonus!",
     sec_next_fixture:"Næste kamp", lbl_vs:"mod", lbl_week:"Uge {w}", lbl_you:"Dig",
     fl_waiting:"⏳ Venter på at {opp} accepterer…", btn_cancel_challenge:"✕ Annullér udfordring", btn_challenge_opp:"⚔️ Udfordr modstander",
+    fl_need_players_title:"Venter på spillere", fl_need_players:"Del din invitationskode ovenfor — sæsonen starter, så snart en ven tilslutter sig.",
     season_champions:"Mestre!", season_podium:"Podieplacering!", season_complete:"Sæson færdig!",
     season_finished:"Sluttede på {medal} plads", btn_start_new_season:"🔄 Start ny sæson", btn_new_season:"🔄 Ny sæson",
     sec_recent_results:"Seneste resultater", btn_trivia:"⚽ Quiz", btn_leave_league:"Forlad liga",
@@ -884,6 +886,7 @@ const TRANSLATIONS={
     hero_pos2:"💪 ¡A un puesto de la cima!", hero_pos3:"⭐ ¡En el podio!", hero_posn:"¡A {n} puestos de un bono!",
     sec_next_fixture:"Próximo partido", lbl_vs:"vs", lbl_week:"Jornada {w}", lbl_you:"Tú",
     fl_waiting:"⏳ Esperando a que {opp} acepte…", btn_cancel_challenge:"✕ Cancelar desafío", btn_challenge_opp:"⚔️ Desafiar al rival",
+    fl_need_players_title:"Esperando jugadores", fl_need_players:"Comparte tu código de invitación arriba — la temporada empieza en cuanto se una un amigo.",
     season_champions:"¡Campeones!", season_podium:"¡Puesto en el podio!", season_complete:"¡Temporada completa!",
     season_finished:"Terminaste en {medal} lugar", btn_start_new_season:"🔄 Empezar nueva temporada", btn_new_season:"🔄 Nueva temporada",
     sec_recent_results:"Resultados recientes", btn_trivia:"⚽ Preguntas", btn_leave_league:"Salir de la liga",
@@ -2820,7 +2823,9 @@ function renderLeague(){
     const flMedal=p=>p===1?"🥇":p===2?"🥈":p===3?"🥉":`${p}.`;
     const flGd=(flMyRow.gf||0)-(flMyRow.ga||0);
     const flTotalWeeks=(fl.totalWeeks)||10;
-    const flSeasonDone=(fl.week||1)>flTotalWeeks||!upcoming.length;
+    const flEnoughPlayers=flTeams.length>=2;
+    // A solo league has no fixtures yet — it's not "done", it hasn't started.
+    const flSeasonDone=flEnoughPlayers&&((fl.week||1)>flTotalWeeks||!upcoming.length);
     const nextMyFix=upcoming.find(f=>f.home===myName||f.away===myName);
 
     return `<div class="screen fade-up">
@@ -2868,7 +2873,13 @@ function renderLeague(){
 
       <!-- Next fixture card (matching bot league style, no simulate week) -->
       <div style="padding:16px 16px 0;">
-        ${nextMyFix&&!flSeasonDone?`
+        ${!flEnoughPlayers?`
+          <div class="glass-card" style="text-align:center;border-color:rgba(0,245,147,.2);">
+            <div style="font-size:32px;margin-bottom:8px;">⏳</div>
+            <div style="font-size:18px;font-family:var(--font-display);color:var(--accent);margin-bottom:4px;">${t('fl_need_players_title')}</div>
+            <div style="font-size:12px;color:var(--text3);">${t('fl_need_players')}</div>
+          </div>`
+        :nextMyFix&&!flSeasonDone?`
           <div class="sec-label">${t('sec_next_fixture')}</div>
           <div style="background:var(--gradientCard);border:1px solid rgba(0,245,147,.2);border-radius:16px;padding:14px 16px;margin-bottom:4px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
