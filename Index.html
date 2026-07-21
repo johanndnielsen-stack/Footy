@@ -611,6 +611,7 @@ const TRANSLATIONS={
     fl_incoming_title:"⚽ Incoming challenge!", fl_incoming_desc:"{from} wants to play their fixture against you",
     btn_accept_setup:"✅ Accept & Set up", btn_decline:"Decline",
     fl_invite_code:"Invite code · tap to copy", lbl_live:"🟢 LIVE", lbl_off:"⚪ OFF", btn_sync:"↻ Sync",
+    fl_share_btn:"📲 Invite friends", fl_share_msg:"⚽ Join my Footy Cards league! Use code {code}", notif_invite_copied:"Invite link copied 📋", fl_invited_to:"You've been invited to league {code} 🎉",
     fl_week_season:"Week {w} · Season {s}",
     hero_pos1_table:"🔥 Top of the table!", hero_pos1_league:"🔥 Top of the league!",
     hero_pos2:"💪 One place off the top!", hero_pos3:"⭐ On the podium!", hero_posn:"{n} places from a bonus!",
@@ -754,6 +755,7 @@ const TRANSLATIONS={
     fl_incoming_title:"⚽ Indkommende udfordring!", fl_incoming_desc:"{from} vil spille deres kamp mod dig",
     btn_accept_setup:"✅ Accepter & opstil", btn_decline:"Afvis",
     fl_invite_code:"Invitationskode · tryk for at kopiere", lbl_live:"🟢 LIVE", lbl_off:"⚪ FRA", btn_sync:"↻ Synk",
+    fl_share_btn:"📲 Inviter venner", fl_share_msg:"⚽ Kom med i min Footy Cards-liga! Brug kode {code}", notif_invite_copied:"Invitationslink kopieret 📋", fl_invited_to:"Du er blevet inviteret til liga {code} 🎉",
     fl_week_season:"Uge {w} · Sæson {s}",
     hero_pos1_table:"🔥 Toppen af tabellen!", hero_pos1_league:"🔥 Toppen af ligaen!",
     hero_pos2:"💪 Én plads fra toppen!", hero_pos3:"⭐ På podiet!", hero_posn:"{n} pladser fra en bonus!",
@@ -896,6 +898,7 @@ const TRANSLATIONS={
     fl_incoming_title:"⚽ ¡Desafío entrante!", fl_incoming_desc:"{from} quiere jugar su partido contra ti",
     btn_accept_setup:"✅ Aceptar y preparar", btn_decline:"Rechazar",
     fl_invite_code:"Código de invitación · toca para copiar", lbl_live:"🟢 EN VIVO", lbl_off:"⚪ DESC.", btn_sync:"↻ Sinc.",
+    fl_share_btn:"📲 Invitar amigos", fl_share_msg:"⚽ ¡Únete a mi liga de Footy Cards! Usa el código {code}", notif_invite_copied:"Enlace de invitación copiado 📋", fl_invited_to:"Has sido invitado a la liga {code} 🎉",
     fl_week_season:"Jornada {w} · Temporada {s}",
     hero_pos1_table:"🔥 ¡En lo más alto de la tabla!", hero_pos1_league:"🔥 ¡Líder de la liga!",
     hero_pos2:"💪 ¡A un puesto de la cima!", hero_pos3:"⭐ ¡En el podio!", hero_posn:"¡A {n} puestos de un bono!",
@@ -2782,6 +2785,7 @@ function renderLeague(){
         return `<div class="screen fade-up">
           ${tabBar}
           <div style="padding:20px 16px;">
+            ${state.pendingJoinCode?`<div style="background:rgba(0,245,147,.1);border:1px solid rgba(0,245,147,.3);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--accent);text-align:center;margin-bottom:12px;">${t('fl_invited_to',{code:state.pendingJoinCode})}</div>`:""}
             <div class="glass-card" style="text-align:center;">
               <div style="font-size:42px;margin-bottom:10px;">🧤</div>
               <div style="font-size:18px;font-weight:700;margin-bottom:6px;">${t('squad_need_title')}</div>
@@ -2808,7 +2812,8 @@ function renderLeague(){
           </div>
           <div class="glass-card">
             <div class="sec-label" style="margin-bottom:10px;">${t('fl_join_header')}</div>
-            <input id="fl-join-code" type="text" placeholder="${t('fl_code_ph')}" maxlength="4"
+            ${state.pendingJoinCode?`<div style="background:rgba(0,245,147,.1);border:1px solid rgba(0,245,147,.3);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--accent);text-align:center;margin-bottom:8px;">${t('fl_invited_to',{code:state.pendingJoinCode})}</div>`:""}
+            <input id="fl-join-code" type="text" placeholder="${t('fl_code_ph')}" maxlength="4" value="${state.pendingJoinCode||''}"
               style="width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-body);font-size:16px;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;"/>
             <input id="fl-join-name" type="text" placeholder="${t('fl_team_name_ph')}" value="${myName}"
               style="width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-body);font-size:13px;margin-bottom:10px;"/>
@@ -2869,7 +2874,10 @@ function renderLeague(){
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
           <div style="font-size:9px;padding:3px 8px;border-radius:20px;background:${isLive?"rgba(0,245,147,.15)":"rgba(255,255,255,.06)"};color:${isLive?"var(--accent)":"var(--text4)"};border:1px solid ${isLive?"rgba(0,245,147,.3)":"var(--border)"};">${isLive?t('lbl_live'):t('lbl_off')}</div>
-          <button class="btn-ghost sm" onclick="refreshFriendLeague()" style="font-size:11px;padding:5px 10px;">${t('btn_sync')}</button>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-ghost sm accent" onclick="shareLeague()" style="font-size:11px;padding:5px 10px;">📲</button>
+            <button class="btn-ghost sm" onclick="refreshFriendLeague()" style="font-size:11px;padding:5px 10px;">${t('btn_sync')}</button>
+          </div>
         </div>
       </div>
 
@@ -2893,6 +2901,7 @@ function renderLeague(){
             <div style="font-size:32px;margin-bottom:8px;">⏳</div>
             <div style="font-size:18px;font-family:var(--font-display);color:var(--accent);margin-bottom:4px;">${t('fl_need_players_title')}</div>
             <div style="font-size:12px;color:var(--text3);">${t('fl_need_players')}</div>
+            <button class="btn-primary" style="width:100%;margin-top:14px;" onclick="shareLeague()">${t('fl_share_btn')}</button>
           </div>`
         :nextMyFix&&!flSeasonDone?`
           <div class="sec-label">${t('sec_next_fixture')}</div>
@@ -3334,6 +3343,7 @@ async function joinFriendLeague(){
     if(!res.ok||!data.league) throw new Error(data.error||"Failed to join");
     state.friendLeague={...data.league,myName:name,loading:false};
     state.leagueTab="friends";
+    state.pendingJoinCode=null;
     render();
     notify(`Joined league ${code}! 🎉`,"var(--accent)");
     startFriendLeaguePoll();
@@ -3388,6 +3398,39 @@ async function friendLeagueNewSeason(){
 function copyLeagueCode(){
   if(!state.friendLeague?.code) return;
   navigator.clipboard?.writeText(state.friendLeague.code).then(()=>notify(`Copied: ${state.friendLeague.code} 📋`,"var(--accent)"));
+}
+
+// Build a tap-to-join link, e.g. https://footy.app/?join=ABCD
+function leagueJoinUrl(code){
+  return location.origin+location.pathname+"?join="+encodeURIComponent(code);
+}
+
+// One-tap invite: native share sheet on mobile, clipboard fallback on desktop.
+async function shareLeague(){
+  const code=state.friendLeague?.code; if(!code) return;
+  const url=leagueJoinUrl(code);
+  const text=t('fl_share_msg',{code});
+  if(navigator.share){
+    try{ await navigator.share({title:"Footy Cards",text,url}); return; }
+    catch(e){ if(e&&e.name==="AbortError") return; /* unsupported field → fall back */ }
+  }
+  try{ await navigator.clipboard.writeText(text+" "+url); notify(t('notif_invite_copied'),"var(--accent)"); }
+  catch(e){ notify(code,"var(--accent)"); }
+}
+
+// On boot, a ?join=CODE link drops the friend straight onto the Friends tab
+// with the code pre-filled, so they don't have to hunt for it or type it.
+function handleJoinLink(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const code=(params.get("join")||"").trim().toUpperCase();
+    if(/^[A-Z0-9]{4}$/.test(code)){
+      state.pendingJoinCode=code;
+      state.leagueTab="friends";
+      state.screen="league";
+    }
+    if(params.has("join")) history.replaceState(null,"",location.pathname);
+  }catch(e){}
 }
 
 function setupFriendLeagueMatch(){
@@ -4481,6 +4524,7 @@ function renderAccount(){
 // ══════════════════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════════════════
+handleJoinLink();
 render();
 autoLoginBoot();
 </script>
