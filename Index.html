@@ -502,6 +502,49 @@ svg{display:block;}
 @keyframes cutDrift{to{transform:translateY(var(--drift,0px));}}
 .cut-ball2{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;border:2px solid #000;box-shadow:0 0 7px rgba(255,255,255,.85);transition:left 1.26s linear,top 1.26s linear;z-index:5;}
 .cut-ball2.shot{transition:left .85s cubic-bezier(.3,0,.1,1),top .85s cubic-bezier(.3,0,.1,1);}
+
+/* ── PENALTY MINI-GAME ── */
+.pg-wrap{position:relative;width:min(96vw,440px);height:min(80vh,560px);border-radius:14px;overflow:hidden;cursor:pointer;
+  background:linear-gradient(180deg,#05060f 0%,#0a1225 30%,#10331c 58%,#0d2b17 100%);
+  border:2px solid rgba(255,255,255,.25);box-shadow:0 0 0 3px rgba(0,0,0,.55),0 18px 50px rgba(0,0,0,.6);animation:cutPop .32s steps(4,end) both;}
+.pg-crowd{position:absolute;left:0;right:0;top:0;height:30%;
+  background:repeating-radial-gradient(circle at 10% 20%,rgba(255,255,255,.15) 0 1.2px,transparent 1.2px 7px),repeating-radial-gradient(circle at 60% 60%,rgba(255,220,150,.12) 0 1.1px,transparent 1.1px 6px),linear-gradient(180deg,#161c33,#0b101f);
+  animation:pgCrowd 1.15s steps(2,end) infinite;}
+@keyframes pgCrowd{50%{filter:brightness(1.3)}}
+.pg-flood{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:160%;height:220px;background:radial-gradient(ellipse at 50% 0,rgba(190,230,255,.16),transparent 70%);pointer-events:none;}
+.pg-goal{position:absolute;left:50%;top:23%;transform:translateX(-50%);width:80%;height:33%;
+  border:5px solid #f4f4f8;border-bottom:none;border-radius:4px 4px 0 0;
+  background:repeating-linear-gradient(0deg,transparent 0 10px,rgba(255,255,255,.13) 10px 11px),repeating-linear-gradient(90deg,transparent 0 10px,rgba(255,255,255,.13) 10px 11px);
+  box-shadow:0 0 24px rgba(160,200,255,.14),inset 0 0 30px rgba(0,0,0,.3);}
+.pg-goal.ripple{animation:cutRipple .1s steps(2,end) 5;}
+.pg-keeper{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:transform .5s cubic-bezier(.3,0,.4,1);z-index:3;}
+.pg-keeper .pg-kbody{width:10px;height:24px;background:linear-gradient(#f59e0b,#b45309);border-radius:4px;margin-top:-3px;}
+.pg-keeper.idle{animation:pgKIdle 1.6s ease-in-out infinite;}
+@keyframes pgKIdle{0%,100%{transform:translateX(-50%) translateY(0)}25%{transform:translateX(calc(-50% - 9px)) translateY(-3px)}75%{transform:translateX(calc(-50% + 9px)) translateY(-3px)}}
+.pg-keeper.dL{animation:none;transform:translateX(calc(-50% - 76px)) translateY(-10px) rotate(-56deg);}
+.pg-keeper.dR{animation:none;transform:translateX(calc(-50% + 76px)) translateY(-10px) rotate(56deg);}
+.pg-keeper.dC{animation:none;transform:translateX(-50%) translateY(-26px);}
+.pg-ret{position:absolute;width:36px;height:36px;margin:-18px 0 0 -18px;z-index:4;pointer-events:none;}
+.pg-ret::before{content:'';position:absolute;inset:0;border:3px solid var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accentGlow),inset 0 0 8px var(--accentGlow);}
+.pg-ret::after{content:'';position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--accent);border-radius:50%;}
+.pg-ret.locked::before{border-color:#fff;animation:pgLock .3s steps(3,end) both;}
+@keyframes pgLock{0%{transform:scale(1.8)}100%{transform:scale(1)}}
+.pg-ball{position:absolute;left:50%;bottom:9%;width:24px;height:24px;margin-left:-12px;border-radius:50%;z-index:5;
+  background:radial-gradient(circle at 34% 30%,#fff 0 40%,#cfd3dc 62%,#8b90a0);border:2px solid #10121c;
+  box-shadow:0 4px 10px rgba(0,0,0,.5),0 0 10px rgba(255,255,255,.25);}
+.pg-ball.fly{transition:left .55s cubic-bezier(.25,0,.3,1),bottom .55s cubic-bezier(.2,0,.25,1),transform .55s linear,width .55s,height .55s;transform:rotate(720deg);}
+.pg-taker{position:absolute;left:36%;bottom:3.5%;z-index:4;transition:left .3s ease-in,bottom .3s ease-in;filter:drop-shadow(0 4px 6px rgba(0,0,0,.6));}
+.pg-hud{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 14px;text-align:center;z-index:6;background:linear-gradient(transparent,rgba(0,0,0,.6));pointer-events:none;}
+.pg-hint{font-family:var(--font-display);font-size:19px;letter-spacing:2px;color:#fff;text-shadow:2px 2px 0 #000;animation:pgPulse .9s ease-in-out infinite;}
+@keyframes pgPulse{50%{opacity:.5}}
+.pg-bar{position:relative;height:15px;border-radius:8px;margin-top:10px;background:rgba(255,255,255,.09);overflow:hidden;border:1px solid rgba(255,255,255,.18);}
+.pg-bar .z-sweet{position:absolute;left:55%;width:27%;top:0;bottom:0;background:rgba(0,245,147,.3);}
+.pg-bar .z-wild{position:absolute;left:90%;right:0;top:0;bottom:0;background:rgba(248,113,113,.45);}
+.pg-bar-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#60a5fa,#00f593 62%,#f59e0b 86%,#f87171);}
+.pg-dive-zone{position:absolute;top:0;bottom:0;z-index:7;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:16px;color:rgba(255,255,255,.8);letter-spacing:1px;
+  background:rgba(96,165,250,.10);border:1.5px dashed rgba(96,165,250,.5);border-radius:8px;animation:pgPulse 1s ease-in-out infinite;cursor:pointer;}
+.pg-dive-zone.picked{background:rgba(0,245,147,.18);border-color:var(--accent);color:var(--accent);animation:none;}
 </style>
 </head>
 <body>
@@ -558,6 +601,8 @@ const TRANSLATIONS={
     nav_home:"Home",nav_trivia:"Trivia",nav_match:"Match",nav_cards:"Cards",nav_league:"League",nav_market:"Market",
     pens_label:"Penalty kicks",pens_desc:"Fouls in the box can award penalties — you take them yourself!",
     pen_pick_hint:"Pick your corner!",pen_left:"LEFT",pen_center:"CENTER",pen_right:"RIGHT",
+    pg_aim_hint:"TAP TO AIM",pg_shoot_hint:"TAP TO SHOOT!",pg_dive_hint:"TAP A SIDE TO DIVE!",
+    so_take_btn:"⚽ Take your penalty",so_dive_btn:"🧤 You're in goal — get ready!",
     tab_cup:"🏆 Cup",cup_intro_title:"Knockout Cup",cup_intro_desc:"8 teams. Quarter-finals, semi-finals, the Final. Lose and you're out — draws go to a penalty shootout!",
     cup_prize_note:"Win the trophy: +250 pts and a Legend-tier card",btn_start_cup:"Start the Cup",
     cup_stage_qf:"Quarter-finals",cup_stage_sf:"Semi-finals",cup_stage_final:"Final",
@@ -718,6 +763,8 @@ const TRANSLATIONS={
     nav_home:"Hjem",nav_trivia:"Quiz",nav_match:"Kamp",nav_cards:"Kort",nav_league:"Liga",nav_market:"Marked",
     pens_label:"Straffespark",pens_desc:"Frispark i feltet kan give straffe — og du sparker selv!",
     pen_pick_hint:"Vælg dit hjørne!",pen_left:"VENSTRE",pen_center:"MIDTEN",pen_right:"HØJRE",
+    pg_aim_hint:"TRYK FOR AT SIGTE",pg_shoot_hint:"TRYK FOR AT SKYDE!",pg_dive_hint:"TRYK PÅ EN SIDE OG RED!",
+    so_take_btn:"⚽ Tag dit straffespark",so_dive_btn:"🧤 Du står på mål — gør dig klar!",
     tab_cup:"🏆 Cup",cup_intro_title:"Knockout-cup",cup_intro_desc:"8 hold. Kvartfinaler, semifinaler og finalen. Taber du, er du ude — uafgjort ender i straffesparkskonkurrence!",
     cup_prize_note:"Vind pokalen: +250 point og et Legend-kort",btn_start_cup:"Start cuppen",
     cup_stage_qf:"Kvartfinaler",cup_stage_sf:"Semifinaler",cup_stage_final:"Finale",
@@ -877,6 +924,8 @@ const TRANSLATIONS={
     nav_home:"Inicio",nav_trivia:"Trivia",nav_match:"Partido",nav_cards:"Cartas",nav_league:"Liga",nav_market:"Mercado",
     pens_label:"Penaltis",pens_desc:"Las faltas en el área pueden ser penalti — ¡y los tiras tú!",
     pen_pick_hint:"¡Elige tu esquina!",pen_left:"IZQUIERDA",pen_center:"CENTRO",pen_right:"DERECHA",
+    pg_aim_hint:"TOCA PARA APUNTAR",pg_shoot_hint:"¡TOCA PARA CHUTAR!",pg_dive_hint:"¡TOCA UN LADO Y VUELA!",
+    so_take_btn:"⚽ Lanza tu penalti",so_dive_btn:"🧤 Estás bajo palos — ¡prepárate!",
     tab_cup:"🏆 Copa",cup_intro_title:"Copa eliminatoria",cup_intro_desc:"8 equipos. Cuartos, semifinales y la Final. Si pierdes, estás fuera — ¡los empates van a penaltis!",
     cup_prize_note:"Gana el trofeo: +250 pts y una carta Legend",btn_start_cup:"Empezar la Copa",
     cup_stage_qf:"Cuartos de final",cup_stage_sf:"Semifinales",cup_stage_final:"Final",
@@ -1293,10 +1342,10 @@ function decorateMatchEvents(events,ctx){
   events.forEach(ev=>{
     const min=minOf(ev), r=Math.random();
     if(ev.type==="goal_my"&&ev.scorerId&&nameOf(ev.scorerId)){
-      if(pensOn&&r<0.20){ev.type="pen_my";ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
-      else if(r<0.30){ev.fk=true;ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
+      if(pensOn&&r<0.12){ev.type="pen_my";ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
+      else if(r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
     } else if(ev.type==="goal_opp"){
-      if(pensOn&&r<0.13){ev.type="pen_opp";ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
+      if(pensOn&&r<0.10){ev.type="pen_opp";ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
       else if(r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
     } else if(ev.type==="miss"&&pensOn&&r<0.02&&ev.playerId&&nameOf(ev.playerId)){
       // Kept rare: the miss pool is ~3× the goal pool, so a higher rate would
@@ -1990,7 +2039,27 @@ function simulateMatch(myTeam,oppTeam,oppName,tacBonus=0){
       events.push({type:"miss",playerId:att.id,text:`${min}' 😬 ${att.name.split(" ")[1]} ${rf(actLang(MISS_ACTIONS))}`});
     }
   }
+  // Standalone spot kicks (local matches only — this engine never runs friend
+  // fixtures): either side can win a penalty at ANY minute, including the 1st.
+  if(state.pens){
+    if(Math.random()<0.25){
+      const sc=rf(weightedAttackers.length?weightedAttackers:all);
+      const scored=Math.random()<0.72, min=ri(1,90);
+      if(scored){myG++;pEv[sc.id]=pEv[sc.id]||{g:0,a:0};pEv[sc.id].g++;}
+      events.push({type:scored?"pen_my":"pen_my_miss",scorerId:sc.id,text:`${min}' ${scored?"⚽":"🧤"} ${sc.name} ${rf(actLang(scored?PEN_GOAL_ACTIONS:PEN_MISS_ACTIONS))}`});
+    }
+    if(Math.random()<0.18){
+      const scored=Math.random()<0.68, min=ri(1,90);
+      const gk=myTeam.find(c=>c.position==="GK");
+      if(scored){oppG++;events.push({type:"pen_opp",text:`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`});}
+      else if(gk)events.push({type:"pen_opp_save",playerId:gk.id,text:`${min}' 🧤 ${gk.name.split(" ")[1]} ${rf(actLang(PEN_SAVE_ACTIONS))}`});
+    }
+  }
   decorateMatchEvents(events,{pensOn:state.pens,oppName});
+  // Local matches: every one of MY penalties is genuinely decided by the
+  // mini-game at display time; the rolled outcome above is only the fallback
+  // (skipped matches, simulate-week, quitting mid-match).
+  events.forEach(e=>{if(e.type==="pen_my"||e.type==="pen_my_miss")e.genuine=true;});
   let motm=null,motmScore=-1;
   for(const [id,ev] of Object.entries(pEv)){const sc=ev.g*3+ev.a;if(sc>motmScore){motmScore=sc;motm=id;}}
   if(!motm&&myTeam.length)motm=rf(myTeam).id;
@@ -4058,6 +4127,8 @@ function playLeagueMatch(tacBonus=0){
   state.points+=matchData.ptGain;
   state.match=matchData;
   state.matchHistory.push({result:matchData.result,myGoals:matchData.myGoals,oppGoals:matchData.oppGoals,oppName,ptGain:matchData.ptGain,isLeague:true,week:lg.week});
+  matchData._histRef=state.matchHistory[state.matchHistory.length-1];
+  matchData._fixRef=fix;
   // Play out the rest of this round: all bot-vs-bot games up to this week, then advance.
   const playedWeek=fix.week||lg.week;
   simulateLeagueWeek(playedWeek);
@@ -4235,6 +4306,8 @@ function playCupMatch(tacBonus=0){
   state.points+=matchData.ptGain;
   state.match=matchData;
   state.matchHistory.push({result:matchData.result,myGoals:matchData.myGoals,oppGoals:matchData.oppGoals,oppName,ptGain:matchData.ptGain,isCup:true});
+  matchData._histRef=state.matchHistory[state.matchHistory.length-1];
+  matchData._fixRef=fix;
   applyFatigueToTeam();
   if(matchData.motm)markInForm(matchData.motm);
   const tactic=state.matchSetup?.tactic||"calm";
@@ -4261,22 +4334,33 @@ function startShootout(fd){
   sndWhistle();
 }
 
-function shootoutPick(dir){
+// Your kick: the full cinematic mini-game (genuine — your aim decides it).
+async function shootoutShoot(){
+  const so=state.shootout; if(!so||so.over||so.turn!=="me"||so._busy)return;
+  so._busy=true;
+  const outfield=state.team.filter(c=>c.position!=="GK").sort((a,b)=>b.overall-a.overall);
+  const taker=outfield.length?outfield[so.my.length%outfield.length]:state.team[0];
+  const keeper=getOppSquad(so.oppName).find(c=>c.position==="GK")||null;
+  const out=await penMiniGame({taker,keeper,mode:"genuine"});
+  so._busy=false;
+  recordShootoutKick(!!out.scored,true);
+}
+// Their kick: you're in goal — the dive mini-game.
+async function shootoutDive(){
+  const so=state.shootout; if(!so||so.over||so.turn!=="opp"||so._busy)return;
+  so._busy=true;
+  const keeper=state.team.find(c=>c.position==="GK")||null;
+  const oppSq=getOppSquad(so.oppName);
+  const oppOut=oppSq.filter(c=>c.position!=="GK");
+  const taker=oppOut.length?oppOut[so.opp.length%oppOut.length]:oppSq[0];
+  const out=await penDiveGame({keeper,taker});
+  so._busy=false;
+  recordShootoutKick(!out.saved,false);
+}
+function recordShootoutKick(scored,mine){
   const so=state.shootout; if(!so||so.over)return;
-  const DIRS=["L","C","R"];
-  if(so.turn==="me"){
-    const dive=rf(DIRS), scored=dir!==dive;
-    so.my.push(scored?1:0);
-    so.last={who:"me",scored,dir,other:dive};
-    so.turn="opp";
-    if(scored)sndGoal(); else sndWhistle();
-  } else {
-    const shot=rf(DIRS), saved=dir===shot;
-    so.opp.push(saved?0:1);
-    so.last={who:"opp",scored:!saved,dir,other:shot};
-    so.turn="me";
-    if(saved)sndGoal(); else sndCrowd(0.06);
-  }
+  if(mine){so.my.push(scored?1:0);so.last={who:"me",scored};so.turn="opp";}
+  else {so.opp.push(scored?1:0);so.last={who:"opp",scored};so.turn="me";}
   const sum=a=>a.reduce((x,y)=>x+y,0);
   const s=sum(so.my),o=sum(so.opp),m=so.my.length,n=so.opp.length;
   let win=null;
@@ -4344,14 +4428,12 @@ function renderShootout(){
       </div>
       ${lastLine}
     </div>
-    <div style="margin:22px auto 0;width:min(280px,84%);height:96px;border:4px solid #fff;border-bottom:none;border-radius:6px 6px 0 0;position:relative;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px),repeating-linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px);">
-      <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:30px;">${myTurn?"🧤":"⚽"}</div>
-    </div>
-    <div style="font-size:13px;font-weight:700;color:${hintCol};margin-top:14px;">${hint}</div>
-    <div style="display:flex;gap:10px;margin-top:12px;width:100%;max-width:380px;">
-      ${[["L","◤",t('pen_left')],["C","⬆",t('pen_center')],["R","◥",t('pen_right')]].map(([d,ic,lb])=>`
-        <button onclick="shootoutPick('${d}')" ${so.over?"disabled":""} style="flex:1;padding:13px 6px;border-radius:12px;border:1.5px solid ${myTurn?"rgba(0,245,147,.45)":"rgba(96,165,250,.45)"};background:${myTurn?"rgba(0,245,147,.1)":"rgba(96,165,250,.1)"};color:#fff;font-family:var(--font-display);font-size:17px;letter-spacing:1px;line-height:1.3;opacity:${so.over?".4":"1"};">${ic}<br>${lb}</button>`).join("")}
-    </div>
+    <div style="font-size:13px;font-weight:700;color:${hintCol};margin-top:22px;">${hint}</div>
+    ${so.over?"":`<div style="margin-top:14px;width:100%;max-width:380px;">
+      <button class="btn-primary" onclick="${myTurn?"shootoutShoot()":"shootoutDive()"}" style="width:100%;font-size:16px;">
+        ${myTurn?t('so_take_btn'):t('so_dive_btn')}
+      </button>
+    </div>`}
   </div>`;
 }
 
@@ -4554,6 +4636,7 @@ async function kickOff(){
   state.points+=matchData.ptGain;
   state.match=matchData;
   state.matchHistory.push({result:matchData.result,myGoals:matchData.myGoals,oppGoals:matchData.oppGoals,oppName:matchData.oppName,ptGain:matchData.ptGain});
+  matchData._histRef=state.matchHistory[state.matchHistory.length-1];
   state.chosenOpp=null;
   applyFatigueToTeam();
   if(tacFatigueExtra>0) state.team.forEach(c=>{c.fatigue=Math.min(100,(c.fatigue||0)+tacFatigueExtra);});
@@ -4834,39 +4917,207 @@ function _burstTitle(el,play){
   el.appendChild(b);
   const scan=document.createElement("div"); scan.className="cut-scan"; el.appendChild(scan);
 }
-// Interactive penalty: the player picks a corner before the scene plays out.
-// The engine has already decided scored/saved — the pick steers the animation
-// (scored → keeper dives the other way; saved → keeper reads it), so the score
-// can never desync from the pre-computed result. 6s to choose, else auto-pick.
-function penaltyChooser(el){
+// ── Cinematic penalty mini-game ─────────────────────────────
+// Two-phase skill shot: a reticle sweeps the goal (tap to AIM), then a power
+// bar oscillates (tap to SHOOT). The keeper (opponent GK avatar) dives.
+// mode "genuine": aim + power + keeper AI truly decide the outcome.
+// mode "scripted": outcome is fixed (seeded friend-league matches) — the scene
+//   adapts: no over-the-bar zone, keeper resolves to match the script.
+// Resolves {scored, over, post, aimX, power}.
+function penMiniGame(opts={}){
+  const el=document.getElementById("cutscene");
+  if(!el)return Promise.resolve({scored:opts.scriptedGoal!==false});
+  const scripted=opts.mode==="scripted";
   return new Promise(res=>{
-    let done=false,tm=null;
-    const fin=d=>{if(done)return;done=true;clearTimeout(tm);window._penPick=null;el.classList.remove("show");el.onclick=null;el.innerHTML="";res(d||_pick(["L","C","R"]));};
-    el.innerHTML=`<div class="cut-bg"></div>
-      <div style="position:relative;z-index:5;width:min(92vw,420px);text-align:center;padding:0 12px;">
-        <div class="cut-title" style="color:var(--accent);"><span class="big" style="font-size:44px;">PENALTY!</span><span class="sub">${t('pen_pick_hint')}</span></div>
-        <div style="margin:26px auto 0;width:min(280px,80%);height:96px;border:4px solid #fff;border-bottom:none;border-radius:6px 6px 0 0;position:relative;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px),repeating-linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px);">
-          <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:30px;">🧤</div>
+    let phase="aim",done=false,raf=null,lockTO=null;
+    let aimX=50,aimY=30,power=0;
+    const inst={}; el._pgOwner=inst;
+    el.innerHTML=`
+      <div class="pg-wrap" id="pgWrap">
+        <div class="pg-crowd"></div><div class="pg-flood"></div>
+        <div class="pg-goal" id="pgGoal">
+          <div class="pg-keeper idle" id="pgKeeper">${opts.keeper?avSVG(opts.keeper,34):'<div style="font-size:24px;">🧤</div>'}<div class="pg-kbody"></div></div>
+          <div class="pg-ret" id="pgRet"></div>
         </div>
-        <div style="display:flex;gap:10px;margin-top:18px;">
-          ${[["L","◤",t('pen_left')],["C","⬆",t('pen_center')],["R","◥",t('pen_right')]].map(([d,ic,lb])=>`
-            <button onclick="window._penPick&&window._penPick('${d}')" style="flex:1;padding:13px 6px;border-radius:12px;border:1.5px solid rgba(0,245,147,.45);background:rgba(0,245,147,.1);color:#fff;font-family:var(--font-display);font-size:17px;letter-spacing:1px;line-height:1.3;">${ic}<br>${lb}</button>`).join("")}
+        <div class="pg-taker" id="pgTaker">${opts.taker?avSVG(opts.taker,42):""}</div>
+        <div class="pg-ball" id="pgBall"></div>
+        <div class="pg-hud">
+          <div class="pg-hint" id="pgHint">🎯 ${t('pg_aim_hint')}</div>
+          <div class="pg-bar" id="pgBarWrap" style="visibility:hidden;">${scripted?"":'<div class="z-wild"></div>'}<div class="z-sweet"></div><div class="pg-bar-fill" id="pgBar"></div></div>
         </div>
-        <div style="height:4px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,.1);margin-top:16px;"><div class="qbar-fill" style="animation-duration:6s;"></div></div>
+        <div class="cut-scan"></div>
       </div>`;
     el.classList.add("show");
-    window._penPick=d=>fin(d);
-    tm=setTimeout(()=>fin(null),6000);
-    sndWhistle();
+    sndWhistle();sndCrowd(0.05);
+    const $=id=>el.querySelector(id);
+    const ret=$("#pgRet"),bar=$("#pgBar"),goal=$("#pgGoal"),keeper=$("#pgKeeper"),ball=$("#pgBall"),hint=$("#pgHint");
+    const t0=performance.now();
+    const tick=now=>{
+      const s=(now-t0)/1000;
+      if(phase==="aim"){
+        aimX=50+46*Math.sin(s*2.6);
+        aimY=34+20*Math.sin(s*1.7+1.2);
+        ret.style.left=aimX+"%";ret.style.top=aimY+"%";
+      } else if(phase==="power"){
+        power=(Math.sin(s*5.4)+1)/2*100;
+        bar.style.width=power+"%";
+      }
+      if(!done&&phase!=="resolve")raf=requestAnimationFrame(tick);
+    };
+    raf=requestAnimationFrame(tick);
+
+    const decide=()=>{ // genuine outcome from aim + power + keeper guess
+      if(power>=90)return{over:true,scored:false,k:1};
+      const third=aimX<33?0:aimX<67?1:2;
+      const r=Math.random();
+      const k=r<0.42?third:r<0.71?(third+1)%3:(third+2)%3;
+      const corner=aimX<15||aimX>85, high=aimY<28;
+      if(corner&&power>=72&&Math.random()<0.16)return{post:true,scored:false,k};
+      if(k!==third){
+        if(power<32&&third===1&&Math.random()<0.6)return{scored:false,k:third}; // weak central roll
+        return{scored:true,k};
+      }
+      if((corner||high)&&power>=55)return{scored:Math.random()<0.72,k};
+      return{scored:false,k};
+    };
+
+    const finish=out=>{
+      if(done)return;done=true;
+      cancelAnimationFrame(raf);clearTimeout(lockTO);
+      el.onclick=null;
+      // Only clear the overlay if this instance still owns it — a newer scene
+      // may have taken over while our closing timer was pending.
+      setTimeout(()=>{if(el._pgOwner===inst){el._pgOwner=null;el.classList.remove("show");el.innerHTML="";}res(out);},1500);
+    };
+
+    const shoot=()=>{
+      phase="resolve";
+      let out;
+      if(scripted){
+        const third=aimX<33?0:aimX<67?1:2;
+        power=Math.min(power,86); // scripted mode can't blaze it over
+        out=opts.scriptedGoal
+          ?{scored:true,k:(third+(Math.random()<0.5?1:2))%3}
+          :{scored:false,k:third};
+      } else out=decide();
+      // choreography: taker steps in, ball flies, keeper dives
+      const tk=$("#pgTaker"); if(tk){tk.style.left="44%";tk.style.bottom="6%";}
+      playNoise(0.08,0.12);
+      setTimeout(()=>{
+        const gRect={left:10,width:80,top:23,height:33}; // matches .pg-goal geometry (% of wrap)
+        let bx,by; // by = target top-% within the wrap
+        if(out.over){bx=gRect.left+gRect.width*(aimX/100);by=gRect.top-9;}
+        else if(out.post){bx=aimX<50?gRect.left-1:gRect.left+gRect.width+1;by=gRect.top+gRect.height*0.4;}
+        else {bx=gRect.left+gRect.width*(aimX/100);by=gRect.top+gRect.height*(Math.max(12,aimY)/100);}
+        ball.classList.add("fly");
+        ball.style.left=bx+"%";ball.style.bottom=(100-by)+"%";
+        ball.style.width="15px";ball.style.height="15px";
+        keeper.classList.remove("idle");
+        keeper.classList.add(out.k===0?"dL":out.k===2?"dR":"dC");
+        setTimeout(()=>{
+          const wrap=$("#pgWrap");
+          let title,color;
+          if(out.scored){goal.classList.add("ripple");title=_pick(["GOAL!","TOP BINS!","BURIED IT!","UNSTOPPABLE!"]);color="#00f593";sndGoal();}
+          else if(out.over){title=_pick(["OVER THE BAR!","SKIED IT!"]);color="#f59e0b";sndCrowd(0.08);}
+          else if(out.post){title=_pick(["OFF THE POST!","SO CLOSE!"]);color="#f59e0b";sndCrowd(0.08);}
+          else {title=_pick(["SAVED!","KEEPER WINS!","WHAT A STOP!"]);color="#f87171";sndWhistle();}
+          const cols=["#00f593","#f59e0b","#60a5fa","#fff","#f87171"];
+          const confetti=out.scored?Array.from({length:16}).map(()=>`<div class="cut-confetti" style="left:${(6+Math.random()*88).toFixed(0)}%;background:${_pick(cols)};animation-delay:${(Math.random()*0.3).toFixed(2)}s;"></div>`).join(""):"";
+          wrap.insertAdjacentHTML("beforeend",`${confetti}<div class="cut-title ${out.scored?"":""}" style="position:absolute;left:0;right:0;top:38%;color:${color};z-index:9;"><span class="big" style="font-size:46px;">${title}</span></div>`);
+          if(out.scored||out.over)wrap.classList.add("cut-shake");
+          finish(out);
+        },560);
+      },300);
+    };
+
+    el.onclick=()=>{
+      if(done||phase==="resolve")return;
+      if(phase==="aim"){
+        phase="power";
+        ret.classList.add("locked");
+        $("#pgBarWrap").style.visibility="visible";
+        hint.innerHTML="⚡ "+t('pg_shoot_hint');
+        clearTimeout(lockTO);
+        lockTO=setTimeout(()=>{if(!done&&phase==="power"){power=20+Math.random()*60;shoot();}},4000);
+      } else if(phase==="power"){
+        shoot();
+      }
+    };
+    lockTO=setTimeout(()=>{if(!done&&phase==="aim")el.onclick&&el.onclick();},5000); // AFK: auto-aim then auto-shoot
   });
 }
+
+// Dive mini-game (shootout, their kick): the shooter runs up — tap LEFT/MID/RIGHT
+// before the strike to dive. Right side + in time = save. Resolves {saved}.
+function penDiveGame(opts={}){
+  const el=document.getElementById("cutscene");
+  if(!el)return Promise.resolve({saved:false});
+  return new Promise(res=>{
+    let done=false,picked=null,struck=false;
+    const inst={}; el._pgOwner=inst;
+    el.innerHTML=`
+      <div class="pg-wrap" id="pgWrap">
+        <div class="pg-crowd"></div><div class="pg-flood"></div>
+        <div class="pg-goal" id="pgGoal">
+          <div class="pg-keeper idle" id="pgKeeper">${opts.keeper?avSVG(opts.keeper,34):'<div style="font-size:24px;">🧤</div>'}<div class="pg-kbody"></div></div>
+          <div class="pg-dive-zone" data-z="0" style="left:2%;width:30%;">◤</div>
+          <div class="pg-dive-zone" data-z="1" style="left:35%;width:30%;">⬆</div>
+          <div class="pg-dive-zone" data-z="2" style="left:68%;width:30%;">◥</div>
+        </div>
+        <div class="pg-taker" id="pgTaker" style="left:30%;bottom:2%;">${opts.taker?avSVG(opts.taker,42):'<div style="font-size:28px;">🏃</div>'}</div>
+        <div class="pg-ball" id="pgBall"></div>
+        <div class="pg-hud"><div class="pg-hint">🧤 ${t('pg_dive_hint')}</div></div>
+        <div class="cut-scan"></div>
+      </div>`;
+    el.classList.add("show");
+    sndWhistle();sndCrowd(0.05);
+    const $=s=>el.querySelector(s);
+    const keeper=$("#pgKeeper"),ball=$("#pgBall"),goal=$("#pgGoal");
+    el.querySelectorAll(".pg-dive-zone").forEach(z=>{
+      z.onclick=e=>{
+        e.stopPropagation();
+        if(done||struck||picked!==null)return;
+        picked=+z.dataset.z;
+        z.classList.add("picked");
+      };
+    });
+    const tk=$("#pgTaker");
+    setTimeout(()=>{if(tk){tk.style.transition="left 1s linear,bottom 1s linear";tk.style.left="42%";tk.style.bottom="5%";}},150);
+    setTimeout(()=>{ // strike
+      if(done)return;
+      struck=true;
+      playNoise(0.08,0.12);
+      const shot=ri(0,2);
+      const saved=picked===shot&&Math.random()<0.85;
+      const gRect={left:10,width:80,top:23,height:33};
+      const sx=[18,50,82][shot];
+      ball.classList.add("fly");
+      ball.style.left=(gRect.left+gRect.width*sx/100)+"%";
+      ball.style.bottom=(100-gRect.top-gRect.height*0.72)+"%";
+      ball.style.width="15px";ball.style.height="15px";
+      keeper.classList.remove("idle");
+      const dv=picked===null?1:picked;
+      keeper.classList.add(dv===0?"dL":dv===2?"dR":"dC");
+      el.querySelectorAll(".pg-dive-zone").forEach(z=>z.style.display="none");
+      setTimeout(()=>{
+        const wrap=$("#pgWrap");
+        const title=saved?_pick(["WHAT A SAVE!","DENIED!","HERO!"]):_pick(["GOAL CONCEDED","BEATEN…","IN THE NET"]);
+        const color=saved?"#00f593":"#f87171";
+        if(saved){sndGoal();}else{sndCrowd(0.07);goal.classList.add("ripple");}
+        const cols=["#00f593","#f59e0b","#60a5fa","#fff"];
+        const confetti=saved?Array.from({length:14}).map(()=>`<div class="cut-confetti" style="left:${(6+Math.random()*88).toFixed(0)}%;background:${_pick(cols)};animation-delay:${(Math.random()*0.3).toFixed(2)}s;"></div>`).join(""):"";
+        wrap.insertAdjacentHTML("beforeend",`${confetti}<div class="cut-title" style="position:absolute;left:0;right:0;top:38%;color:${color};z-index:9;"><span class="big" style="font-size:44px;">${title}</span></div>`);
+        if(saved)wrap.classList.add("cut-shake");
+        done=true;
+        setTimeout(()=>{if(el._pgOwner===inst){el._pgOwner=null;el.classList.remove("show");el.innerHTML="";}res({saved});},1500);
+      },560);
+    },1450);
+  });
+}
+
 async function playScene(kind,ev){
   const el=document.getElementById("cutscene"); if(!el) return;
   const gen=_liveGen, alive=()=>state.screen==="livematch"&&gen===_liveGen;
-  if((kind==="pen_my"||kind==="pen_my_miss")&&ev&&!ev._pick){
-    ev._pick=await penaltyChooser(el);
-    if(!alive())return;
-  }
   const play=buildPlay(kind,ev); if(!play) return;
   el.innerHTML=`<div class="cut-bg"></div>
     <div class="cut-pitch">
@@ -4898,6 +5149,47 @@ async function playScene(kind,ev){
 function hideCutscene(){const el=document.getElementById("cutscene");if(el&&el.classList.contains("show")){el.classList.remove("show");el.onclick=null;el.innerHTML="";}}
 const _delay=ms=>new Promise(r=>setTimeout(r,ms));
 
+// Apply a genuine mini-game result over the engine's rolled penalty outcome,
+// then immediately re-sync every record that depends on the score (result,
+// points, match history entry, league/cup fixture) so quitting mid-match can
+// never leave them inconsistent.
+function applyPenOverride(fd,ev,scoredNow){
+  const was=ev.type==="pen_my";
+  const id=ev.scorerId||ev.playerId;
+  const min=parseInt(ev.text)||0;
+  const card=id?state.team.find(c=>c.id===id):null;
+  ev.type=scoredNow?"pen_my":"pen_my_miss";
+  if(card)ev.text=`${min}' ${scoredNow?"⚽":"🧤"} ${card.name} ${rf(actLang(scoredNow?PEN_GOAL_ACTIONS:PEN_MISS_ACTIONS))}`;
+  if(was===scoredNow)return;
+  fd.myGoals+=scoredNow?1:-1;
+  fd._penAdj=(fd._penAdj||0)+(scoredNow?1:-1);
+  if(id){
+    const pe=fd.playerEvents[id]=fd.playerEvents[id]||{g:0,a:0};
+    pe.g=Math.max(0,pe.g+(scoredNow?1:-1));
+    if(card){
+      card.goals=Math.max(0,(card.goals||0)+(scoredNow?1:-1));
+      if(scoredNow){grantXP(card,15);grantAch(card,"first_goal");if(pe.g>=3)grantAch(card,"hat_trick");}
+    }
+  }
+  syncPenAdjustments(fd);
+}
+function syncPenAdjustments(fd){
+  if(!fd||!fd._penAdj)return;
+  const nr=fd.myGoals>fd.oppGoals?"win":fd.myGoals===fd.oppGoals?"draw":"loss";
+  if(nr!==fd.result){
+    const np=nr==="win"?50:nr==="draw"?20:5;
+    state.points+=np-fd.ptGain;
+    fd.result=nr;fd.ptGain=np;
+  }
+  if(fd._histRef){fd._histRef.result=fd.result;fd._histRef.myGoals=fd.myGoals;fd._histRef.oppGoals=fd.oppGoals;fd._histRef.ptGain=fd.ptGain;}
+  if(fd._fixRef){
+    const fx=fd._fixRef,isHome=fx.homeIsPlayer;
+    fx.hg=isHome?fd.myGoals:fd.oppGoals;fx.ag=isHome?fd.oppGoals:fd.myGoals;fx.result=fd.result;
+    if(fd.isCup)fx.winner=fd.result==="draw"?null:fd.result==="win"?(isHome?fx.home:fx.away):(isHome?fx.away:fx.home);
+  }
+  saveState();
+}
+
 let _liveGen=0;
 async function driveLiveMatch(){
   const gen=++_liveGen;
@@ -4925,13 +5217,32 @@ async function driveLiveMatch(){
       return;
     }
     const ev=lm.events[lm.shown];
+    // Your penalties → the cinematic mini-game. Genuine (local matches): the
+    // result is whatever you shoot. Scripted (friend league): seed-decided,
+    // the scene adapts. Records sync inside applyPenOverride, so quitting
+    // mid-match keeps everything consistent.
+    if(ev.type==="pen_my"||ev.type==="pen_my_miss"){
+      const taker=state.team.find(c=>c.id===(ev.scorerId||ev.playerId))||state.team[0];
+      const keeper=(lm.oppTeam||[]).find(c=>c.position==="GK")||null;
+      const out=await penMiniGame(ev.genuine
+        ?{taker,keeper,mode:"genuine"}
+        :{taker,keeper,mode:"scripted",scriptedGoal:ev.type==="pen_my"});
+      const scoredNow=ev.genuine?!!out.scored:(ev.type==="pen_my");
+      if(ev.genuine)applyPenOverride(lm.finalData,ev,scoredNow);
+      if(scoredNow)lm.score[0]++;
+      if(!active()){hideCutscene();return;}
+      lm.shown++;
+      render(true);
+      await _delay(1100);
+      continue;
+    }
     // Play the cutscene FIRST; the action only lands on the board (sound + score + feed line) afterwards.
-    const isPen=ev.type==="pen_my"||ev.type==="pen_my_miss"||ev.type==="pen_opp"||ev.type==="pen_opp_save";
+    const isPen=ev.type==="pen_opp"||ev.type==="pen_opp_save";
     const isOff=ev.type==="off_my"||ev.type==="off_opp";
     const willCut=(ev.type==="goal_my"||ev.type==="goal_opp")||isPen||(isOff&&Math.random()<0.55)||((ev.type==="def"||ev.type==="miss")&&Math.random()<0.6);
     if(willCut) await playScene(ev.type,ev);
     if(!active()){hideCutscene();return;}
-    if(ev.type==="goal_my"||ev.type==="pen_my"){lm.score[0]++;sndGoal();}
+    if(ev.type==="goal_my"){lm.score[0]++;sndGoal();}
     else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;sndGoal();}
     else if(isPen||isOff){sndWhistle();sndCrowd(0.04);}
     else{sndCrowd(0.03);}
