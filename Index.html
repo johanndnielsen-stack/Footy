@@ -1376,56 +1376,219 @@ function decorateMatchEvents(events,ctx){
 const SAVE_KEY="fc_save";
 
 // ══════════════════════════════════════════════════════════
-// SOUND ENGINE  (Web Audio API — no external files needed)
+// SOUND ENGINE — procedural stadium audio (Web Audio API, no files)
+// Layered synthesis: pea-whistle trills, looping crowd bed with slow
+// swells, goal roars with clapping, disappointed "ohhh"s, ball thumps.
 // ══════════════════════════════════════════════════════════
-let _ac=null;
-function getAC(){if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();return _ac;}
+let _ac=null,_master=null,_nbuf={};
+function getAC(){
+  if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();
+  if(_ac.state==="suspended")_ac.resume().catch(()=>{});
+  return _ac;
+}
+// Master bus with a gentle compressor so stacked layers never clip.
+function sndBus(){
+  const ac=getAC();
+  if(!_master){
+    const comp=ac.createDynamicsCompressor();
+    comp.threshold.value=-18;comp.knee.value=12;comp.ratio.value=5;comp.attack.value=0.004;comp.release.value=0.2;
+    const g=ac.createGain();g.gain.value=0.9;
+    g.connect(comp);comp.connect(ac.destination);
+    _master=g;
+  }
+  return _master;
+}
+function noiseBuf(ac,dur){
+  const key=Math.round(dur*1000);
+  if(!_nbuf[key]){
+    const b=ac.createBuffer(1,Math.max(64,Math.floor(ac.sampleRate*dur)),ac.sampleRate);
+    const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    _nbuf[key]=b;
+  }
+  return _nbuf[key];
+}
 function playTone(freq,dur,type="sine",vol=0.18,delay=0){
   try{
     const ac=getAC();const t=ac.currentTime+delay;
     const o=ac.createOscillator(),g=ac.createGain();
     o.type=type;o.frequency.setValueAtTime(freq,t);
     g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-    o.connect(g);g.connect(ac.destination);
+    o.connect(g);g.connect(sndBus());
     o.start(t);o.stop(t+dur);
   }catch(e){}
 }
 function playNoise(dur,vol=0.06,delay=0){
   try{
     const ac=getAC();const t=ac.currentTime+delay;
-    const buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate);
-    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1);
     const src=ac.createBufferSource(),g=ac.createGain(),f=ac.createBiquadFilter();
-    src.buffer=buf;f.type="bandpass";f.frequency.value=400;f.Q.value=0.5;
+    src.buffer=noiseBuf(ac,dur);f.type="bandpass";f.frequency.value=400;f.Q.value=0.5;
     g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-    src.connect(f);f.connect(g);g.connect(ac.destination);src.start(t);src.stop(t+dur);
+    src.connect(f);f.connect(g);g.connect(sndBus());src.start(t);src.stop(t+dur);
   }catch(e){}
 }
-function sndWhistle(){
-  playTone(900,0.08,"sine",0.25);playTone(850,0.3,"sine",0.12,0.08);
-  playTone(950,0.15,"sine",0.1,0.38);
+// Referee pea whistle: high square through a resonant bandpass, amplitude-
+// modulated ~40 Hz (the rattling pea) + a breath-noise layer.
+function whistleBlast(dur=0.4,delay=0,vol=0.22){
+  try{
+    const ac=getAC();const t=ac.currentTime+delay;
+    const o=ac.createOscillator();o.type="square";
+    o.frequency.setValueAtTime(2350,t);o.frequency.linearRampToValueAtTime(2260,t+dur);
+    const bp=ac.createBiquadFilter();bp.type="bandpass";bp.frequency.value=2300;bp.Q.value=7;
+    const g=ac.createGain();
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.015);
+    g.gain.setValueAtTime(vol,t+Math.max(0.02,dur-0.05));g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    const trem=ac.createOscillator();trem.frequency.value=38+Math.random()*7;
+    const tg=ac.createGain();tg.gain.value=vol*0.75;
+    trem.connect(tg);tg.connect(g.gain);
+    o.connect(bp);bp.connect(g);g.connect(sndBus());
+    const br=ac.createBufferSource();br.buffer=noiseBuf(ac,dur);
+    const bf=ac.createBiquadFilter();bf.type="bandpass";bf.frequency.value=2600;bf.Q.value=2;
+    const bg=ac.createGain();bg.gain.setValueAtTime(vol*0.15,t);bg.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    br.connect(bf);bf.connect(bg);bg.connect(sndBus());
+    o.start(t);o.stop(t+dur);trem.start(t);trem.stop(t+dur);br.start(t);br.stop(t+dur);
+  }catch(e){}
 }
+// Crowd roar: looping noise through a sweeping bandpass + a handful of
+// "shouting" saw voices gliding upward.
+function crowdRoar(dur=2,vol=0.25,delay=0){
+  try{
+    const ac=getAC();const t=ac.currentTime+delay;
+    const src=ac.createBufferSource();src.buffer=noiseBuf(ac,2);src.loop=true;
+    const bp=ac.createBiquadFilter();bp.type="bandpass";bp.Q.value=0.6;
+    bp.frequency.setValueAtTime(380,t);bp.frequency.linearRampToValueAtTime(950,t+dur*0.25);bp.frequency.linearRampToValueAtTime(480,t+dur);
+    const g=ac.createGain();
+    g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(vol,t+dur*0.16);
+    g.gain.setValueAtTime(vol,t+dur*0.45);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    src.connect(bp);bp.connect(g);g.connect(sndBus());
+    src.start(t);src.stop(t+dur+0.05);
+    for(let i=0;i<6;i++){
+      const o=ac.createOscillator();o.type="sawtooth";
+      const f0=280+Math.random()*380;
+      o.frequency.setValueAtTime(f0,t);o.frequency.linearRampToValueAtTime(f0*(1.12+Math.random()*0.22),t+dur*0.4);
+      const lp=ac.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1200;
+      const og=ac.createGain();
+      og.gain.setValueAtTime(0.0001,t);og.gain.exponentialRampToValueAtTime(vol*0.055,t+dur*(0.15+Math.random()*0.2));
+      og.gain.exponentialRampToValueAtTime(0.001,t+dur*0.9);
+      o.connect(lp);lp.connect(og);og.connect(sndBus());o.start(t);o.stop(t+dur);
+    }
+  }catch(e){}
+}
+// Clapping: a dense scatter of tiny high-passed noise ticks.
+function applause(dur=1.5,vol=0.13,delay=0){
+  try{
+    const ac=getAC();const t0=ac.currentTime+delay;
+    const g=ac.createGain();g.gain.setValueAtTime(vol,t0);
+    g.gain.setValueAtTime(vol,t0+dur*0.6);g.gain.linearRampToValueAtTime(0.001,t0+dur);
+    const hp=ac.createBiquadFilter();hp.type="highpass";hp.frequency.value=1700;
+    hp.connect(g);g.connect(sndBus());
+    const n=Math.floor(dur*65);
+    for(let i=0;i<n;i++){
+      const t=t0+Math.random()*dur;
+      const src=ac.createBufferSource();src.buffer=noiseBuf(ac,0.05);
+      const cg=ac.createGain();
+      cg.gain.setValueAtTime(0.3+Math.random()*0.7,t);cg.gain.exponentialRampToValueAtTime(0.001,t+0.018+Math.random()*0.02);
+      src.connect(cg);cg.connect(hp);src.start(t);src.stop(t+0.05);
+    }
+  }catch(e){}
+}
+// Crowd "ohhh…" — falling formant sweep + sagging hum voices.
+function sndOoh(vol=0.2){
+  try{
+    const ac=getAC();const t=ac.currentTime;
+    const src=ac.createBufferSource();src.buffer=noiseBuf(ac,1);src.loop=true;
+    const f1=ac.createBiquadFilter();f1.type="bandpass";f1.Q.value=2.4;
+    f1.frequency.setValueAtTime(620,t);f1.frequency.exponentialRampToValueAtTime(290,t+0.8);
+    const g=ac.createGain();
+    g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.12);g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
+    src.connect(f1);f1.connect(g);g.connect(sndBus());src.start(t);src.stop(t+0.95);
+    for(let i=0;i<4;i++){
+      const o=ac.createOscillator();o.type="triangle";
+      const f0=210+i*45+Math.random()*30;
+      o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f0*0.72,t+0.7);
+      const og=ac.createGain();
+      og.gain.setValueAtTime(0.0001,t);og.gain.exponentialRampToValueAtTime(vol*0.11,t+0.15);og.gain.exponentialRampToValueAtTime(0.001,t+0.8);
+      o.connect(og);og.connect(sndBus());o.start(t);o.stop(t+0.85);
+    }
+  }catch(e){}
+}
+// Air horn in the stands (occasional goal celebration).
+function sndHorn(delay=0){
+  try{
+    const ac=getAC();const t=ac.currentTime+delay;
+    [0,3.5].forEach(det=>{
+      const o=ac.createOscillator();o.type="sawtooth";o.frequency.value=233+det;
+      const lp=ac.createBiquadFilter();lp.type="lowpass";lp.frequency.value=900;
+      const g=ac.createGain();
+      g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.055,t+0.06);
+      g.gain.setValueAtTime(0.055,t+0.5);g.gain.exponentialRampToValueAtTime(0.001,t+0.72);
+      o.connect(lp);lp.connect(g);g.connect(sndBus());o.start(t);o.stop(t+0.75);
+    });
+  }catch(e){}
+}
+// Ball strike: dropping low thump + leather snap.
+function sndKick(vol=0.4){
+  try{
+    const ac=getAC();const t=ac.currentTime;
+    const o=ac.createOscillator();o.type="sine";
+    o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(46,t+0.09);
+    const g=ac.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.13);
+    o.connect(g);g.connect(sndBus());o.start(t);o.stop(t+0.14);
+    const src=ac.createBufferSource();src.buffer=noiseBuf(ac,0.04);
+    const f=ac.createBiquadFilter();f.type="bandpass";f.frequency.value=1500;f.Q.value=1;
+    const ng=ac.createGain();ng.gain.setValueAtTime(vol*0.5,t);ng.gain.exponentialRampToValueAtTime(0.001,t+0.05);
+    src.connect(f);f.connect(ng);ng.connect(sndBus());src.start(t);src.stop(t+0.05);
+  }catch(e){}
+}
+// Continuous stadium murmur during live play — looping filtered noise with a
+// slow swell LFO. Idempotent start; fades out on stop.
+let _crowdBed=null;
+function crowdStart(){
+  if(_crowdBed)return;
+  try{
+    const ac=getAC();
+    const src=ac.createBufferSource();src.buffer=noiseBuf(ac,2);src.loop=true;
+    const bp=ac.createBiquadFilter();bp.type="bandpass";bp.frequency.value=420;bp.Q.value=0.4;
+    const lp=ac.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
+    const g=ac.createGain();
+    const lfo=ac.createOscillator();lfo.frequency.value=0.11+Math.random()*0.1;
+    const lg=ac.createGain();lg.gain.value=0.014;
+    lfo.connect(lg);lg.connect(g.gain);
+    src.connect(bp);bp.connect(lp);lp.connect(g);g.connect(sndBus());
+    const t=ac.currentTime;
+    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.05,t+1.4);
+    src.start();lfo.start();
+    _crowdBed={src,lfo,g};
+  }catch(e){_crowdBed=null;}
+}
+function crowdStop(){
+  if(!_crowdBed||!_ac)return;
+  try{
+    const {src,lfo,g}=_crowdBed;const t=_ac.currentTime;
+    g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(Math.max(0.001,g.gain.value),t);
+    g.gain.linearRampToValueAtTime(0.0001,t+0.7);
+    src.stop(t+0.8);lfo.stop(t+0.8);
+  }catch(e){}
+  _crowdBed=null;
+}
+// ── Game-facing cues ──
+function sndWhistle(){whistleBlast(0.32,0,0.2);}
+function sndFullTime(){whistleBlast(0.22,0,0.2);whistleBlast(0.22,0.3,0.2);whistleBlast(0.75,0.6,0.22);}
 function sndKickoff(){
-  sndWhistle();
-  setTimeout(()=>{playNoise(0.12,0.12);playTone(180,0.2,"sawtooth",0.08,0.05);},200);
+  whistleBlast(0.6,0,0.22);
+  crowdRoar(1.6,0.12,0.15);
 }
 function sndGoal(){
-  // crowd roar burst + rising cheer melody
-  playNoise(1.8,0.18);
-  [523,659,784,1047].forEach((f,i)=>playTone(f,0.18,"sine",0.22,i*0.12));
-  setTimeout(()=>playNoise(1.2,0.1),400);
+  sndKick(0.25);
+  crowdRoar(2.8,0.3,0.05);
+  applause(2,0.12,0.35);
+  if(Math.random()<0.35)sndHorn(0.5);
 }
 function sndCorrect(){
-  // commentator "goal!" style rising sting
-  [440,554,659,880].forEach((f,i)=>playTone(f,0.14,"triangle",0.16,i*0.09));
+  crowdRoar(1.1,0.14);
+  applause(1,0.12,0.1);
 }
-function sndWrong(){
-  playTone(220,0.25,"sawtooth",0.12);playTone(180,0.3,"sawtooth",0.08,0.1);
-}
-function sndCrowd(intensity=0.05){
-  // ambient crowd hum
-  playNoise(2.5,intensity);playTone(120,2.5,"sine",0.04);
-}
+function sndWrong(){sndOoh(0.18);}
+function sndCrowd(intensity=0.05){crowdRoar(1.5,Math.min(0.3,intensity*3));}
 
 // Commentator phrases for correct trivia answers
 const COMMENTATOR_CORRECT=[
@@ -3898,6 +4061,8 @@ function playFromChallenge(ch,tacBonus,tactic){
 function render(preserveScroll){
   saveState();
   if(state.screen!=="livematch") hideCutscene();
+  // Stadium murmur runs whenever live football is on screen.
+  if(state.screen==="livematch"||state.screen==="shootout")crowdStart();else crowdStop();
   const app=document.getElementById("app");
   const sw=document.getElementById("screen-wrap");
   const prevScroll=preserveScroll?sw.scrollTop:0;
@@ -5002,7 +5167,7 @@ function penMiniGame(opts={}){
       } else out=decide();
       // choreography: taker steps in, ball flies, keeper dives
       const tk=$("#pgTaker"); if(tk){tk.style.left="44%";tk.style.bottom="6%";}
-      playNoise(0.08,0.12);
+      sndKick();
       setTimeout(()=>{
         const gRect={left:10,width:80,top:23,height:33}; // matches .pg-goal geometry (% of wrap)
         let bx,by; // by = target top-% within the wrap
@@ -5018,9 +5183,9 @@ function penMiniGame(opts={}){
           const wrap=$("#pgWrap");
           let title,color;
           if(out.scored){goal.classList.add("ripple");title=_pick(["GOAL!","TOP BINS!","BURIED IT!","UNSTOPPABLE!"]);color="#00f593";sndGoal();}
-          else if(out.over){title=_pick(["OVER THE BAR!","SKIED IT!"]);color="#f59e0b";sndCrowd(0.08);}
-          else if(out.post){title=_pick(["OFF THE POST!","SO CLOSE!"]);color="#f59e0b";sndCrowd(0.08);}
-          else {title=_pick(["SAVED!","KEEPER WINS!","WHAT A STOP!"]);color="#f87171";sndWhistle();}
+          else if(out.over){title=_pick(["OVER THE BAR!","SKIED IT!"]);color="#f59e0b";sndOoh(0.2);}
+          else if(out.post){title=_pick(["OFF THE POST!","SO CLOSE!"]);color="#f59e0b";sndOoh(0.22);}
+          else {title=_pick(["SAVED!","KEEPER WINS!","WHAT A STOP!"]);color="#f87171";sndOoh(0.18);sndWhistle();}
           const cols=["#00f593","#f59e0b","#60a5fa","#fff","#f87171"];
           const confetti=out.scored?Array.from({length:16}).map(()=>`<div class="cut-confetti" style="left:${(6+Math.random()*88).toFixed(0)}%;background:${_pick(cols)};animation-delay:${(Math.random()*0.3).toFixed(2)}s;"></div>`).join(""):"";
           wrap.insertAdjacentHTML("beforeend",`${confetti}<div class="cut-title ${out.scored?"":""}" style="position:absolute;left:0;right:0;top:38%;color:${color};z-index:9;"><span class="big" style="font-size:46px;">${title}</span></div>`);
@@ -5086,7 +5251,7 @@ function penDiveGame(opts={}){
     setTimeout(()=>{ // strike
       if(done)return;
       struck=true;
-      playNoise(0.08,0.12);
+      sndKick();
       const shot=ri(0,2);
       const saved=picked===shot&&Math.random()<0.85;
       const gRect={left:10,width:80,top:23,height:33};
@@ -5103,7 +5268,7 @@ function penDiveGame(opts={}){
         const wrap=$("#pgWrap");
         const title=saved?_pick(["WHAT A SAVE!","DENIED!","HERO!"]):_pick(["GOAL CONCEDED","BEATEN…","IN THE NET"]);
         const color=saved?"#00f593":"#f87171";
-        if(saved){sndGoal();}else{sndCrowd(0.07);goal.classList.add("ripple");}
+        if(saved){sndGoal();}else{sndOoh(0.2);goal.classList.add("ripple");}
         const cols=["#00f593","#f59e0b","#60a5fa","#fff"];
         const confetti=saved?Array.from({length:14}).map(()=>`<div class="cut-confetti" style="left:${(6+Math.random()*88).toFixed(0)}%;background:${_pick(cols)};animation-delay:${(Math.random()*0.3).toFixed(2)}s;"></div>`).join(""):"";
         wrap.insertAdjacentHTML("beforeend",`${confetti}<div class="cut-title" style="position:absolute;left:0;right:0;top:38%;color:${color};z-index:9;"><span class="big" style="font-size:44px;">${title}</span></div>`);
@@ -5198,7 +5363,8 @@ async function driveLiveMatch(){
     const lm=state.liveMatchState;
     // Match over → wrap up
     if(lm.shown>=lm.events.length){
-      sndCrowd(0.07);
+      sndFullTime();
+      sndCrowd(0.06);
       await _delay(900); if(!active())return;
       const fd=lm.finalData;
       // Drawn cup tie → straight to the shootout, no result notify (nothing is decided yet).
@@ -5243,8 +5409,11 @@ async function driveLiveMatch(){
     if(willCut) await playScene(ev.type,ev);
     if(!active()){hideCutscene();return;}
     if(ev.type==="goal_my"){lm.score[0]++;sndGoal();}
-    else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;sndGoal();}
+    else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;sndOoh(0.22);crowdRoar(1.2,0.08,0.3);} // home groan, away pocket cheers
+    else if(ev.type==="pen_opp_save"){sndWhistle();sndGoal();} // hero save = eruption
     else if(isPen||isOff){sndWhistle();sndCrowd(0.04);}
+    else if(ev.type==="miss"){sndOoh(0.13);}
+    else if(ev.type==="def"){applause(0.8,0.07);sndCrowd(0.02);}
     else{sndCrowd(0.03);}
     lm.shown++;
     render(true);
