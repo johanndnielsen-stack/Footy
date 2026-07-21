@@ -1376,13 +1376,15 @@ function decorateMatchEvents(events,ctx){
 const SAVE_KEY="fc_save";
 
 // ══════════════════════════════════════════════════════════
-// SOUND ENGINE — procedural stadium audio (Web Audio API, no files)
-// Layered synthesis: pea-whistle trills, looping crowd bed with slow
-// swells, goal roars with clapping, disappointed "ohhh"s, ball thumps.
+// SOUND ENGINE — real recorded stadium audio with synth fallback
+// Primary: royalty-free recordings of actual crowds, whistles, ball
+// strikes (sounds/*.mp3, Pixabay license — commercial-OK, no attribution).
+// Fallback: if a clip hasn't loaded (or the fetch failed), the same cue
+// falls through to the layered Web-Audio synthesis further down.
 // ══════════════════════════════════════════════════════════
 let _ac=null,_master=null,_nbuf={};
 function getAC(){
-  if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();
+  if(!_ac){_ac=new(window.AudioContext||window.webkitAudioContext)();preloadSounds();}
   if(_ac.state==="suspended")_ac.resume().catch(()=>{});
   return _ac;
 }
@@ -1406,6 +1408,52 @@ function noiseBuf(ac,dur){
     _nbuf[key]=b;
   }
   return _nbuf[key];
+}
+// ── Recorded clips ──
+const SND_FILES={
+  whistle:"sounds/whistle.mp3",     // football referee whistle (~5s)
+  cheer:"sounds/cheer.mp3",         // goal roar + applause (~4.4s)
+  aww:"sounds/aww.mp3",             // crowd disappointment (~3s)
+  kick:"sounds/kick.mp3",           // ball strike (~0.8s)
+  crowdBed:"sounds/crowd-bed.mp3",  // looping match ambience (~39s)
+};
+const _sbuf={},_sonset={};
+let _sndLoadStarted=false;
+function preloadSounds(){
+  if(_sndLoadStarted)return; _sndLoadStarted=true;
+  const ac=_ac||getAC();
+  Object.entries(SND_FILES).forEach(([k,url])=>{
+    fetch(url).then(r=>r.ok?r.arrayBuffer():Promise.reject(r.status))
+      .then(ab=>ac.decodeAudioData(ab))
+      .then(buf=>{
+        _sbuf[k]=buf; _sonset[k]=bufOnset(buf);
+        // If we're mid-match on the synth fallback bed, swap to the real loop.
+        if(k==="crowdBed"&&_crowdWanted&&(!_crowdBed||!_crowdBed.sample)){crowdStop();setTimeout(crowdStart,60);}
+      })
+      .catch(()=>{}); // silent — the synth cue covers this sound
+  });
+}
+// First loud sample in a clip — lets us skip leading silence we can't hear.
+function bufOnset(buf){
+  const d=buf.getChannelData(0), step=Math.max(1,Math.floor(d.length/6000));
+  for(let i=0;i<d.length;i+=step){ if(Math.abs(d[i])>0.03) return Math.max(0,i/buf.sampleRate-0.01); }
+  return 0;
+}
+// Play a decoded clip (optionally a leading slice). Returns true if it fired,
+// false if the buffer isn't ready — callers use that to trigger the synth.
+function playSample(key,{vol=0.8,dur=null,delay=0,fade=0.03}={}){
+  const buf=_sbuf[key]; if(!buf)return false;
+  try{
+    const ac=getAC(),t=ac.currentTime+delay,off=_sonset[key]||0;
+    const src=ac.createBufferSource();src.buffer=buf;
+    const g=ac.createGain();src.connect(g);g.connect(sndBus());
+    const playDur=dur||Math.max(0.05,buf.duration-off);
+    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(vol,t+fade);
+    g.gain.setValueAtTime(vol,t+Math.max(fade,playDur-0.14));
+    g.gain.linearRampToValueAtTime(0.0001,t+playDur);
+    src.start(t,off);src.stop(t+playDur+0.03);
+    return true;
+  }catch(e){return false;}
 }
 function playTone(freq,dur,type="sine",vol=0.18,delay=0){
   try{
@@ -1492,7 +1540,7 @@ function applause(dur=1.5,vol=0.13,delay=0){
   }catch(e){}
 }
 // Crowd "ohhh…" — falling formant sweep + sagging hum voices.
-function sndOoh(vol=0.2){
+function _soohSynth(vol=0.2){
   try{
     const ac=getAC();const t=ac.currentTime;
     const src=ac.createBufferSource();src.buffer=noiseBuf(ac,1);src.loop=true;
@@ -1526,7 +1574,7 @@ function sndHorn(delay=0){
   }catch(e){}
 }
 // Ball strike: dropping low thump + leather snap.
-function sndKick(vol=0.4){
+function _kickSynth(vol=0.4){
   try{
     const ac=getAC();const t=ac.currentTime;
     const o=ac.createOscillator();o.type="sine";
@@ -1539,56 +1587,68 @@ function sndKick(vol=0.4){
     src.connect(f);f.connect(ng);ng.connect(sndBus());src.start(t);src.stop(t+0.05);
   }catch(e){}
 }
-// Continuous stadium murmur during live play — looping filtered noise with a
-// slow swell LFO. Idempotent start; fades out on stop.
-let _crowdBed=null;
+// Continuous stadium ambience during live play. Prefers the recorded loop;
+// if it hasn't decoded yet, starts the synth murmur and preloadSounds swaps
+// to the real loop the moment it lands. Idempotent; fades out on stop.
+let _crowdBed=null,_crowdWanted=false;
 function crowdStart(){
+  _crowdWanted=true;
   if(_crowdBed)return;
   try{
-    const ac=getAC();
-    const src=ac.createBufferSource();src.buffer=noiseBuf(ac,2);src.loop=true;
-    const bp=ac.createBiquadFilter();bp.type="bandpass";bp.frequency.value=420;bp.Q.value=0.4;
-    const lp=ac.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
-    const g=ac.createGain();
-    const lfo=ac.createOscillator();lfo.frequency.value=0.11+Math.random()*0.1;
-    const lg=ac.createGain();lg.gain.value=0.014;
-    lfo.connect(lg);lg.connect(g.gain);
-    src.connect(bp);bp.connect(lp);lp.connect(g);g.connect(sndBus());
-    const t=ac.currentTime;
-    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.05,t+1.4);
-    src.start();lfo.start();
-    _crowdBed={src,lfo,g};
+    const ac=getAC(),t=ac.currentTime;
+    const buf=_sbuf.crowdBed;
+    if(buf){ // real recorded crowd, looped seamlessly past the intro silence
+      const off=_sonset.crowdBed||0;
+      const src=ac.createBufferSource();src.buffer=buf;src.loop=true;src.loopStart=off;src.loopEnd=buf.duration;
+      const g=ac.createGain();src.connect(g);g.connect(sndBus());
+      g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.5,t+1.4);
+      src.start(t,off);
+      _crowdBed={src,g,sample:true};
+    } else { // synth murmur fallback until the file loads
+      const src=ac.createBufferSource();src.buffer=noiseBuf(ac,2);src.loop=true;
+      const bp=ac.createBiquadFilter();bp.type="bandpass";bp.frequency.value=420;bp.Q.value=0.4;
+      const lp=ac.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
+      const g=ac.createGain();
+      const lfo=ac.createOscillator();lfo.frequency.value=0.11+Math.random()*0.1;
+      const lg=ac.createGain();lg.gain.value=0.014;
+      lfo.connect(lg);lg.connect(g.gain);
+      src.connect(bp);bp.connect(lp);lp.connect(g);g.connect(sndBus());
+      g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.05,t+1.4);
+      src.start();lfo.start();
+      _crowdBed={src,lfo,g,sample:false};
+    }
   }catch(e){_crowdBed=null;}
 }
 function crowdStop(){
+  _crowdWanted=false;
   if(!_crowdBed||!_ac)return;
   try{
     const {src,lfo,g}=_crowdBed;const t=_ac.currentTime;
-    g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(Math.max(0.001,g.gain.value),t);
+    g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(Math.max(0.0011,g.gain.value),t);
     g.gain.linearRampToValueAtTime(0.0001,t+0.7);
-    src.stop(t+0.8);lfo.stop(t+0.8);
+    src.stop(t+0.8);if(lfo)lfo.stop(t+0.8);
   }catch(e){}
   _crowdBed=null;
 }
-// ── Game-facing cues ──
-function sndWhistle(){whistleBlast(0.32,0,0.2);}
-function sndFullTime(){whistleBlast(0.22,0,0.2);whistleBlast(0.22,0.3,0.2);whistleBlast(0.75,0.6,0.22);}
+// ── Game-facing cues (recorded first, synth fallback) ──
+function sndKick(vol=0.4){ if(!playSample("kick",{vol:Math.min(1,vol+0.4)})) _kickSynth(vol); }
+function sndOoh(vol=0.2){ if(!playSample("aww",{vol:Math.min(0.9,0.55+vol)})) _soohSynth(vol); }
+function sndWhistle(){ if(!playSample("whistle",{vol:0.6,dur:0.85})) whistleBlast(0.32,0,0.2); }
+function sndFullTime(){
+  if(_sbuf.whistle){ playSample("whistle",{vol:0.6,dur:0.45}); playSample("whistle",{vol:0.6,dur:0.45,delay:0.5}); playSample("whistle",{vol:0.65,dur:1.2,delay:1.0}); }
+  else { whistleBlast(0.22,0,0.2);whistleBlast(0.22,0.3,0.2);whistleBlast(0.75,0.6,0.22); }
+}
 function sndKickoff(){
-  whistleBlast(0.6,0,0.22);
-  crowdRoar(1.6,0.12,0.15);
+  if(!playSample("whistle",{vol:0.6,dur:1.0})) whistleBlast(0.6,0,0.22);
+  if(!playSample("cheer",{vol:0.45,dur:1.8,delay:0.15})) crowdRoar(1.6,0.12,0.15);
 }
 function sndGoal(){
-  sndKick(0.25);
-  crowdRoar(2.8,0.3,0.05);
-  applause(2,0.12,0.35);
-  if(Math.random()<0.35)sndHorn(0.5);
+  sndKick(0.45); // real ball strike into the roar
+  if(!playSample("cheer",{vol:0.9,delay:0.05})){ crowdRoar(2.8,0.3,0.05); applause(2,0.12,0.35); if(Math.random()<0.35)sndHorn(0.5); }
 }
-function sndCorrect(){
-  crowdRoar(1.1,0.14);
-  applause(1,0.12,0.1);
-}
-function sndWrong(){sndOoh(0.18);}
-function sndCrowd(intensity=0.05){crowdRoar(1.5,Math.min(0.3,intensity*3));}
+function sndCorrect(){ if(!playSample("cheer",{vol:0.7,dur:1.8})){ crowdRoar(1.1,0.14); applause(1,0.12,0.1); } }
+function sndWrong(){ sndOoh(0.2); }
+function sndCrowd(intensity=0.05){ if(!playSample("cheer",{vol:Math.min(0.5,intensity*4),dur:1.3})) crowdRoar(1.5,Math.min(0.3,intensity*3)); }
 
 // Commentator phrases for correct trivia answers
 const COMMENTATOR_CORRECT=[
