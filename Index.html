@@ -514,7 +514,7 @@ svg{display:block;}
         <div class="header-sub" id="header-sub">Footy Cards</div>
         <div class="header-title" id="header-title">Dashboard</div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;"><button id="lang-btn" onclick="cycleLang()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font-body);letter-spacing:0.04em;" title="Switch language">🌐 EN</button><button id="acct-btn" onclick="navTo('account')" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:4px 9px;font-size:13px;cursor:pointer;color:var(--text2);font-family:var(--font-body);" title="Account">👤</button><div class="header-avatar" id="header-pts">500</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><button id="lang-btn" onclick="cycleLang()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font-body);letter-spacing:0.04em;" title="Switch language">🌐 EN</button><button id="acct-btn" onclick="navTo('account')" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:4px 9px;font-size:13px;cursor:pointer;color:var(--text2);font-family:var(--font-body);" title="Account">👤</button><div class="header-avatar" id="header-pts">150</div></div>
     </div>
   </div>
   <div id="screen-wrap"><div id="app"></div></div>
@@ -556,6 +556,20 @@ let _lang=localStorage.getItem("fc_lang")||"EN";
 const TRANSLATIONS={
   EN:{
     nav_home:"Home",nav_trivia:"Trivia",nav_match:"Match",nav_cards:"Cards",nav_league:"League",nav_market:"Market",
+    pens_label:"Penalty kicks",pens_desc:"Fouls in the box can award penalties — you take them yourself!",
+    pen_pick_hint:"Pick your corner!",pen_left:"LEFT",pen_center:"CENTER",pen_right:"RIGHT",
+    tab_cup:"🏆 Cup",cup_intro_title:"Knockout Cup",cup_intro_desc:"8 teams. Quarter-finals, semi-finals, the Final. Lose and you're out — draws go to a penalty shootout!",
+    cup_prize_note:"Win the trophy: +250 pts and a Legend-tier card",btn_start_cup:"Start the Cup",
+    cup_stage_qf:"Quarter-finals",cup_stage_sf:"Semi-finals",cup_stage_final:"Final",
+    cup_next_tie:"Your tie",cup_play_btn:"Play tie",btn_resume_shootout:"⚽ Penalty shootout!",
+    cup_champion_label:"Champion",cup_champion_you:"That's YOU! 🎉",btn_new_cup:"Start a new Cup",
+    cup_eliminated:"You were knocked out — the bracket played out without you.",
+    cup_pens_short:"{h}–{a} pens",btn_back_to_cup:"🏆 Back to the Cup",
+    so_header:"SHOOTOUT",so_start:"Full time — penalty shootout!",so_shoot_hint:"You shoot — pick a corner!",so_dive_hint:"They shoot — dive to save!",
+    so_win:"You win the shootout! 🎉",so_lose:"Lost the shootout 💔",so_sudden:"SUDDEN DEATH",
+    so_you_scored:"GOAL! You buried it ⚽",so_you_missed:"Saved! The keeper read it 🧤",so_opp_scored:"They score ⚽",so_you_saved:"WHAT A SAVE! 🧤",
+    notif_cup_champion:"🏆 CUP CHAMPIONS! +250 pts & a Legend card!",
+    screen_shootout_sub:"Footy Cards",screen_shootout_title:"Penalty Shootout",
     screen_home_sub:"Footy Cards",screen_home_title:"Dashboard",
     screen_market_sub:"Footy Cards",screen_market_title:"Transfer Market",
     screen_trivia_sub:"Footy Cards",screen_trivia_title:"Trivia",
@@ -702,6 +716,20 @@ const TRANSLATIONS={
   },
   DA:{
     nav_home:"Hjem",nav_trivia:"Quiz",nav_match:"Kamp",nav_cards:"Kort",nav_league:"Liga",nav_market:"Marked",
+    pens_label:"Straffespark",pens_desc:"Frispark i feltet kan give straffe — og du sparker selv!",
+    pen_pick_hint:"Vælg dit hjørne!",pen_left:"VENSTRE",pen_center:"MIDTEN",pen_right:"HØJRE",
+    tab_cup:"🏆 Cup",cup_intro_title:"Knockout-cup",cup_intro_desc:"8 hold. Kvartfinaler, semifinaler og finalen. Taber du, er du ude — uafgjort ender i straffesparkskonkurrence!",
+    cup_prize_note:"Vind pokalen: +250 point og et Legend-kort",btn_start_cup:"Start cuppen",
+    cup_stage_qf:"Kvartfinaler",cup_stage_sf:"Semifinaler",cup_stage_final:"Finale",
+    cup_next_tie:"Din kamp",cup_play_btn:"Spil kampen",btn_resume_shootout:"⚽ Straffesparkskonkurrence!",
+    cup_champion_label:"Mester",cup_champion_you:"Det er DIG! 🎉",btn_new_cup:"Start en ny cup",
+    cup_eliminated:"Du røg ud — resten af turneringen blev spillet uden dig.",
+    cup_pens_short:"{h}–{a} str.",btn_back_to_cup:"🏆 Tilbage til cuppen",
+    so_header:"STRAFFE",so_start:"Kampen er slut — straffesparkskonkurrence!",so_shoot_hint:"Du sparker — vælg et hjørne!",so_dive_hint:"De sparker — kast dig og red!",
+    so_win:"Du vinder straffekonkurrencen! 🎉",so_lose:"Tabte straffekonkurrencen 💔",so_sudden:"SUDDEN DEATH",
+    so_you_scored:"MÅL! Du bankede den ind ⚽",so_you_missed:"Reddet! Keeperen læste dig 🧤",so_opp_scored:"De scorer ⚽",so_you_saved:"SIKKE EN REDNING! 🧤",
+    notif_cup_champion:"🏆 CUP-MESTRE! +250 point & et Legend-kort!",
+    screen_shootout_sub:"Footy Cards",screen_shootout_title:"Straffekonkurrence",
     screen_home_sub:"Footy Cards",screen_home_title:"Oversigt",
     screen_market_sub:"Footy Cards",screen_market_title:"Transfermarked",
     screen_trivia_sub:"Footy Cards",screen_trivia_title:"Quiz",
@@ -847,6 +875,20 @@ const TRANSLATIONS={
   },
   ES:{
     nav_home:"Inicio",nav_trivia:"Trivia",nav_match:"Partido",nav_cards:"Cartas",nav_league:"Liga",nav_market:"Mercado",
+    pens_label:"Penaltis",pens_desc:"Las faltas en el área pueden ser penalti — ¡y los tiras tú!",
+    pen_pick_hint:"¡Elige tu esquina!",pen_left:"IZQUIERDA",pen_center:"CENTRO",pen_right:"DERECHA",
+    tab_cup:"🏆 Copa",cup_intro_title:"Copa eliminatoria",cup_intro_desc:"8 equipos. Cuartos, semifinales y la Final. Si pierdes, estás fuera — ¡los empates van a penaltis!",
+    cup_prize_note:"Gana el trofeo: +250 pts y una carta Legend",btn_start_cup:"Empezar la Copa",
+    cup_stage_qf:"Cuartos de final",cup_stage_sf:"Semifinales",cup_stage_final:"Final",
+    cup_next_tie:"Tu eliminatoria",cup_play_btn:"Jugar",btn_resume_shootout:"⚽ ¡Tanda de penaltis!",
+    cup_champion_label:"Campeón",cup_champion_you:"¡Eres TÚ! 🎉",btn_new_cup:"Nueva Copa",
+    cup_eliminated:"Quedaste eliminado — el torneo siguió sin ti.",
+    cup_pens_short:"{h}–{a} pen.",btn_back_to_cup:"🏆 Volver a la Copa",
+    so_header:"PENALTIS",so_start:"Final del partido — ¡tanda de penaltis!",so_shoot_hint:"Tiras tú — ¡elige esquina!",so_dive_hint:"Tiran ellos — ¡lánzate a parar!",
+    so_win:"¡Ganas la tanda! 🎉",so_lose:"Perdiste la tanda 💔",so_sudden:"MUERTE SÚBITA",
+    so_you_scored:"¡GOL! La clavaste ⚽",so_you_missed:"¡Parada! El portero te leyó 🧤",so_opp_scored:"Marcan ellos ⚽",so_you_saved:"¡QUÉ PARADA! 🧤",
+    notif_cup_champion:"🏆 ¡CAMPEONES DE COPA! +250 pts y una carta Legend",
+    screen_shootout_sub:"Footy Cards",screen_shootout_title:"Tanda de Penaltis",
     screen_home_sub:"Footy Cards",screen_home_title:"Panel",
     screen_market_sub:"Footy Cards",screen_market_title:"Mercado de Fichajes",
     screen_trivia_sub:"Footy Cards",screen_trivia_title:"Trivia",
@@ -1171,6 +1213,7 @@ const JERSEY_COLORS=["#e11d48","#2563eb","#16a34a","#9333ea","#ea580c","#0891b2"
 const BOT_NAMES=["⚡ BlazeBot","🤖 TactiBot","🦾 IronFC","🌀 VortexAI","🎯 PrecisionBot"];
 const DIFF_COLORS={easy:"#00f593",medium:"#a78bfa",hard:"#f59e0b"};
 const DIFF_PTS={easy:10,medium:25,hard:50};
+const START_PTS=150; // starting balance for brand-new players (existing saves keep theirs)
 const XP_PER_LEVEL=100;
 const ACHIEVEMENTS={
   first_goal:{icon:"⚽",label:"First Goal",   desc:"Scored first ever goal"},
@@ -1209,7 +1252,74 @@ const DEF_ACTIONS={
   DA:["erobrer bolden rent 🛡️","laver en vigtig blokering! 🦾","bryder perfekt 🎯","header den væk! 💪"],
   ES:["roba el balón limpio 🛡️","¡bloqueo crucial! 🦾","intercepta perfecto 🎯","¡la despeja de cabeza! 💪"],
 };
+const PEN_GOAL_ACTIONS={
+  EN:["steps up… and buries the penalty! 🎯","sends the keeper the wrong way from the spot ✅","smashes the penalty home 💥","coolly rolls the penalty in 🧊"],
+  DA:["løber til… og banker straffesparket ind! 🎯","sender keeperen den forkerte vej fra pletten ✅","hamrer straffesparket ind 💥","sender iskoldt straffet i mål 🧊"],
+  ES:["se acerca… ¡y clava el penalti! 🎯","engaña al portero desde el punto ✅","revienta el penalti a la red 💥","pica el penalti con frialdad 🧊"],
+};
+const PEN_MISS_ACTIONS={
+  EN:["sees the penalty SAVED! 🧤","hits the post from the spot! 😱","blazes the penalty over 😬"],
+  DA:["får straffesparket REDDET! 🧤","rammer stolpen fra pletten! 😱","brænder straffet over mål 😬"],
+  ES:["¡le PARAN el penalti! 🧤","¡al palo desde el punto! 😱","manda el penalti por encima 😬"],
+};
+const PEN_SAVE_ACTIONS={
+  EN:["guesses right and SAVES the penalty!! 🧤","dives full stretch to deny the spot kick! 🦸","gets a glove to the penalty! 🧱"],
+  DA:["gætter rigtigt og REDDER straffesparket!! 🧤","kaster sig og redder straffet! 🦸","får en handske på straffesparket! 🧱"],
+  ES:["¡adivina y PARA el penalti!! 🧤","¡vuela para detener el penalti! 🦸","¡llega con la mano al penalti! 🧱"],
+};
+const FK_GOAL_ACTIONS={
+  EN:["curls the free kick over the wall! 🌀","free kick — top corner! 🎯","thunders the free kick home 💥"],
+  DA:["krøller frisparket over muren! 🌀","frispark — oppe i krogen! 🎯","hamrer frisparket i mål 💥"],
+  ES:["¡rosca la falta por encima de la barrera! 🌀","¡tiro libre a la escuadra! 🎯","¡fusila de tiro libre! 💥"],
+};
+const OFFSIDE_ACTIONS={
+  EN:["is caught offside 🚩","times the run badly — flag up! 🚩","strays offside at the worst moment 🚩"],
+  DA:["fanges i offside 🚩","timer løbet forkert — flaget ryger op! 🚩","står offside på det værste tidspunkt 🚩"],
+  ES:["cae en fuera de juego 🚩","calcula mal el desmarque — ¡banderín arriba! 🚩","queda en fuera de juego 🚩"],
+};
 const actLang=m=>m[_lang]||m.EN;
+
+// Post-process a generated event list with set-piece variety. Score-neutral by
+// design: goals stay goals (some become penalties/free kicks), some misses become
+// saved penalties, some defensive stops become GK penalty saves, and offside
+// events are inserted at free minutes. Safe for the seeded friend-league sim
+// because hg/ag are locked in before this runs.
+function decorateMatchEvents(events,ctx){
+  const pensOn=!!ctx.pensOn, oppName=ctx.oppName||"Rivals";
+  const cards={}; (state.team||[]).forEach(c=>{cards[c.id]=c;});
+  const nameOf=id=>cards[id]?cards[id].name:null;
+  const minOf=ev=>parseInt(ev.text)||0;
+  const gk=(state.team||[]).find(c=>c.position==="GK");
+  events.forEach(ev=>{
+    const min=minOf(ev), r=Math.random();
+    if(ev.type==="goal_my"&&ev.scorerId&&nameOf(ev.scorerId)){
+      if(pensOn&&r<0.20){ev.type="pen_my";ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
+      else if(r<0.30){ev.fk=true;ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
+    } else if(ev.type==="goal_opp"){
+      if(pensOn&&r<0.13){ev.type="pen_opp";ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
+      else if(r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
+    } else if(ev.type==="miss"&&pensOn&&r<0.02&&ev.playerId&&nameOf(ev.playerId)){
+      // Kept rare: the miss pool is ~3× the goal pool, so a higher rate would
+      // make penalty conversion feel unfairly low (target ≈70–75% like real life).
+      ev.type="pen_my_miss";ev.text=`${min}' 🧤 ${nameOf(ev.playerId)} ${rf(actLang(PEN_MISS_ACTIONS))}`;
+    } else if(ev.type==="def"&&pensOn&&r<0.04&&gk){
+      ev.type="pen_opp_save";ev.playerId=gk.id;ev.text=`${min}' 🧤 ${gk.name.split(" ")[1]} ${rf(actLang(PEN_SAVE_ACTIONS))}`;
+    }
+  });
+  // Offside flavor: 0–2 per match at minutes nothing else uses.
+  const used=new Set(events.map(minOf));
+  const attackers=(state.team||[]).filter(c=>["ST","LW","RW","CAM"].includes(c.position));
+  const nOff=ri(0,2);
+  for(let i=0;i<nOff;i++){
+    let m=ri(7,88),g=0; while(used.has(m)&&g<20){m=ri(7,88);g++;}
+    if(used.has(m))break; used.add(m);
+    const mine=Math.random()<0.5&&attackers.length;
+    if(mine){const a=rf(attackers);events.push({type:"off_my",playerId:a.id,text:`${m}' 🚩 ${a.name.split(" ")[1]} ${rf(actLang(OFFSIDE_ACTIONS))}`});}
+    else events.push({type:"off_opp",text:`${m}' 🚩 ${oppName} ${rf(actLang(OFFSIDE_ACTIONS))}`});
+  }
+  events.sort((a,b)=>minOf(a)-minOf(b));
+  return events;
+}
 
 // ══════════════════════════════════════════════════════════
 // STATE PERSISTENCE
@@ -1372,6 +1482,9 @@ function buildSave(){
     friendLeague:state.friendLeague,
     leagueTab:state.leagueTab,
     founder:state.founder,
+    pens:state.pens,
+    cup:state.cup,
+    cupWins:state.cupWins,
   };
 }
 function applySave(s){
@@ -1388,6 +1501,9 @@ function applySave(s){
   if(s.friendLeague!==undefined)state.friendLeague=s.friendLeague;
   if(s.leagueTab)state.leagueTab=s.leagueTab;
   if(s.founder!=null)state.founder=s.founder;
+  if(s.pens!=null)state.pens=s.pens;
+  if(s.cup!==undefined)state.cup=s.cup;
+  if(s.cupWins!=null)state.cupWins=s.cupWins;
 }
 function loadAccount(){
   try{const r=localStorage.getItem("fc_account");return r?JSON.parse(r):null;}catch(e){return null;}
@@ -1412,7 +1528,7 @@ const _saved=loadState();
 // ══════════════════════════════════════════════════════════
 const state={
   screen:"home",
-  points:_saved.points??500,
+  points:_saved.points??START_PTS,
   collection:_saved.collection||[],
   team:_saved.team||[],
   league:null,
@@ -1431,7 +1547,10 @@ const state={
   liveMatchState:null,
   league:_saved.league||null,
   friendLeague:_saved.friendLeague||null, // { code, teams, fixtures, week, season, myName }
-  leagueTab:_saved.leagueTab||"bot", // "bot" | "friends"
+  leagueTab:_saved.leagueTab||"bot", // "bot" | "friends" | "cup"
+  pens:_saved.pens??false, // opt-in: penalty kicks can be awarded in matches (interactive)
+  cup:_saved.cup||null,    // knockout cup: { round, rounds, teams, champion, edition }
+  cupWins:_saved.cupWins||0,
   account:loadAccount(), // { token, username } | null
 };
 
@@ -1871,6 +1990,7 @@ function simulateMatch(myTeam,oppTeam,oppName,tacBonus=0){
       events.push({type:"miss",playerId:att.id,text:`${min}' 😬 ${att.name.split(" ")[1]} ${rf(actLang(MISS_ACTIONS))}`});
     }
   }
+  decorateMatchEvents(events,{pensOn:state.pens,oppName});
   let motm=null,motmScore=-1;
   for(const [id,ev] of Object.entries(pEv)){const sc=ev.g*3+ev.a;if(sc>motmScore){motmScore=sc;motm=id;}}
   if(!motm&&myTeam.length)motm=rf(myTeam).id;
@@ -2483,11 +2603,17 @@ function confirmFriendlyKickOff(){
 function renderPreMatch(){
   const isLeague=state.matchSetup?.isLeague;
   const isFriendLeague=state.matchSetup?.isFriendLeague;
-  if(!isLeague&&!isFriendLeague&&(!window._bots||state.chosenOpp==null)) return renderMatch();
+  const isCup=state.matchSetup?.isCup;
+  if(!isLeague&&!isFriendLeague&&!isCup&&(!window._bots||state.chosenOpp==null)) return renderMatch();
 
   // Build opponent display info
   let opp;
-  if(isLeague){
+  if(isCup){
+    const fix=getMyCupFixture();
+    if(!fix)return renderLeague();
+    const oppName=fix.homeIsPlayer?fix.away:fix.home;
+    opp={name:oppName,avg:cupTeamAvg(oppName),isCup:true};
+  } else if(isLeague){
     const nextLeague=getNextPlayerFixture();
     const oppName=nextLeague?(nextLeague.homeIsPlayer?nextLeague.away:nextLeague.home):"Opponent";
     const oppEntry=state.league?.teams?.find(t=>t.name===oppName);
@@ -2573,9 +2699,9 @@ function renderPreMatch(){
           <div style="font-size:11px;color:var(--text4);margin-bottom:2px;">${opp.name}</div>
           <div style="font-size:24px;font-family:var(--font-display);color:${oppCol};">${opp.avg}</div>
         </div>
-        <button onclick="${isLeague?"navTo('match')":isFriendLeague?"navTo('league')":"navTo('friendlysetup')"}" style="font-size:11px;color:var(--text4);background:none;border:none;cursor:pointer;padding:4px 8px;">${t('btn_back')}</button>
+        <button onclick="${isLeague?"navTo('match')":isCup?"state.leagueTab='cup';navTo('league')":isFriendLeague?"navTo('league')":"navTo('friendlysetup')"}" style="font-size:11px;color:var(--text4);background:none;border:none;cursor:pointer;padding:4px 8px;">${t('btn_back')}</button>
       </div>
-      ${isLeague?`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:#a78bfa;font-weight:700;letter-spacing:.06em;">${t('tag_bot_fixture')}</span></div>`:isFriendLeague?`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,245,147,.12);border:1px solid rgba(0,245,147,.35);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;">${t('tag_friends_fixture')}</span></div>`:`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,245,147,.08);border:1px solid rgba(0,245,147,.2);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;">${t('tag_friendly')}</span></div>`}
+      ${isCup?`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:var(--legend);font-weight:700;letter-spacing:.06em;">🏆 ${cupStageName(state.cup?.round||0).toUpperCase()}</span></div>`:isLeague?`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:#a78bfa;font-weight:700;letter-spacing:.06em;">${t('tag_bot_fixture')}</span></div>`:isFriendLeague?`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,245,147,.12);border:1px solid rgba(0,245,147,.35);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;">${t('tag_friends_fixture')}</span></div>`:`<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,245,147,.08);border:1px solid rgba(0,245,147,.2);border-radius:8px;padding:4px 10px;margin-top:8px;"><span style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;">${t('tag_friendly')}</span></div>`}
     </div>
 
     <!-- Formation -->
@@ -2628,6 +2754,20 @@ function renderPreMatch(){
       </div>
     </div>
 
+    <!-- Penalty kicks opt-in -->
+    <div style="padding:12px 16px 0;">
+      <div onclick="togglePens()" style="display:flex;align-items:center;gap:10px;background:${state.pens?"rgba(0,245,147,.07)":"var(--surface)"};border:1px solid ${state.pens?"rgba(0,245,147,.3)":"var(--border)"};border-radius:12px;padding:10px 12px;cursor:pointer;">
+        <div style="font-size:20px;">🎯</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:700;color:${state.pens?"var(--accent)":"var(--text2)"};">${t('pens_label')}</div>
+          <div style="font-size:10px;color:var(--text4);margin-top:1px;">${t('pens_desc')}</div>
+        </div>
+        <div style="width:38px;height:22px;border-radius:11px;background:${state.pens?"var(--accent)":"rgba(255,255,255,.12)"};position:relative;transition:background .2s;flex-shrink:0;">
+          <div style="position:absolute;top:2px;left:${state.pens?"18px":"2px"};width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Kick off -->
     <div style="padding:16px 16px 0;">
       <button class="btn-primary" onclick="kickOff()">
@@ -2636,6 +2776,7 @@ function renderPreMatch(){
     </div>
   </div>`;
 }
+function togglePens(){state.pens=!state.pens;saveState();render(true);}
 
 function renderMatchReport(){
   const m=state.match; if(!m)return renderHome();
@@ -2682,8 +2823,10 @@ function renderMatchReport(){
     <div class="glass-card" style="padding:14px 16px;">
       <div class="timeline-wrap">
         ${m.events.map(e=>{
-          const dotCls=e.type==="goal_my"?"tl-goal-my":e.type==="goal_opp"?"tl-goal-opp":e.type==="def"?"tl-def":"tl-miss";
-          const textCol=e.type==="goal_my"?"var(--accent)":e.type==="goal_opp"?"#f87171":e.type==="def"?"#60a5fa":"var(--text4)";
+          const myG=e.type==="goal_my"||e.type==="pen_my", opG=e.type==="goal_opp"||e.type==="pen_opp";
+          const defE=e.type==="def"||e.type==="pen_opp_save"||e.type==="off_opp";
+          const dotCls=myG?"tl-goal-my":opG?"tl-goal-opp":defE?"tl-def":"tl-miss";
+          const textCol=myG?"var(--accent)":opG?"#f87171":defE?"#60a5fa":"var(--text4)";
           return `<div class="timeline-event">
             <div class="timeline-dot ${dotCls}"></div>
             <div style="font-size:12px;color:${textCol};line-height:1.4;">${e.text}</div>
@@ -2761,8 +2904,8 @@ function renderMatchReport(){
     <div style="padding:0 16px 0;">${timelineHTML.replace('<div style="padding:0 16px;">','<div>').replace('</div>','</div>',1)}</div>
     ${devHTML}${achHTML}
     <div style="padding:0 16px 0;">${fatigueHTML.replace('<div style="padding:0 16px;">','<div>').replace('</div>','</div>',1)}</div>
-    ${(state.match?.isLeague||state.match?.isFriendLeague)?`<div style="padding:20px 16px 0;">
-      <button class="btn-primary" style="width:100%;" onclick="goToLeagueFromMatch()">${t('btn_back_to_league')}</button>
+    ${(state.match?.isLeague||state.match?.isFriendLeague||state.match?.isCup)?`<div style="padding:20px 16px 0;">
+      <button class="btn-primary" style="width:100%;" onclick="goToLeagueFromMatch()">${state.match?.isCup?t('btn_back_to_cup'):t('btn_back_to_league')}</button>
     </div>`:""}
     <div style="padding:20px 16px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
       <button class="btn-ghost accent" onclick="navTo('match')">${t('btn_rematch')}</button>
@@ -2779,7 +2922,10 @@ function renderLeague(){
   const tabBar=`<div style="display:flex;gap:6px;padding:14px 16px 0;">
     <button onclick="state.leagueTab='bot';render();" style="flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid ${tab==='bot'?'var(--accent)':'var(--border)'};background:${tab==='bot'?'rgba(0,245,147,.12)':'var(--surface)'};color:${tab==='bot'?'var(--accent)':'var(--text3)'};">${t('tab_bot')}</button>
     <button onclick="state.leagueTab='friends';render();${state.friendLeague?.code?'startFriendLeaguePoll();':''}" style="flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid ${tab==='friends'?'rgba(0,245,147,.5)':'var(--border)'};background:${tab==='friends'?'rgba(0,245,147,.12)':'var(--surface)'};color:${tab==='friends'?'var(--accent)':'var(--text3)'};">${t('tab_friends')}${state.friendLeague?.code?' ●':''}</button>
+    <button onclick="state.leagueTab='cup';render();" style="flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid ${tab==='cup'?'rgba(245,158,11,.6)':'var(--border)'};background:${tab==='cup'?'rgba(245,158,11,.12)':'var(--surface)'};color:${tab==='cup'?'var(--legend)':'var(--text3)'};">${t('tab_cup')}${state.cup&&!state.cup.champion?' ●':''}</button>
   </div>`;
+
+  if(tab==="cup") return renderCupTab(tabBar);
 
   if(tab==="friends"){
     // ── Friends League tab ─────────────────────────────────
@@ -3099,13 +3245,15 @@ function renderLiveMatch(){
   const isLive=lm.shown<lm.events.length;
 
   // Build event rows — newest first
+  const FEED_META={ // type → [row class, icon, minute color]
+    goal_my:["goal","⚽","#00f593"], pen_my:["goal","🎯","#00f593"],
+    goal_opp:["goal-opp","⚽","#f87171"], pen_opp:["goal-opp","🎯","#f87171"],
+    def:["def","🛡️","#60a5fa"], pen_opp_save:["def","🧤","#60a5fa"],
+    pen_my_miss:["","🧤","#f59e0b"], off_my:["","🚩","var(--text4)"], off_opp:["def","🚩","#60a5fa"],
+    miss:["","💨","var(--text4)"],
+  };
   const eventRows=[...shown].reverse().map((ev,idx)=>{
-    const isMyGoal=ev.type==="goal_my";
-    const isOppGoal=ev.type==="goal_opp";
-    const isDef=ev.type==="def";
-    const cls=isMyGoal?"goal":isOppGoal?"goal-opp":isDef?"def":"";
-    const icon=isMyGoal?"⚽":isOppGoal?"⚽":isDef?"🛡️":"💨";
-    const color=isMyGoal?"#00f593":isOppGoal?"#f87171":isDef?"#60a5fa":"var(--text4)";
+    const [cls,icon,color]=FEED_META[ev.type]||FEED_META.miss;
     const txt=ev.text.replace(/^\d+'[ ]/,"");
     const min=ev.text.match(/^(\d+)'/)?.[1]||"";
     return `<div class="live-event-card ${cls}" style="animation-delay:${idx*0.06}s;">
@@ -3591,7 +3739,7 @@ async function declineChallenge(){
 
 function goToLeagueFromMatch(){
   // Return to the correct league tab after a league match.
-  state.leagueTab=state.match?.isFriendLeague?"friends":"bot";
+  state.leagueTab=state.match?.isFriendLeague?"friends":state.match?.isCup?"cup":"bot";
   state.screen="league";
   render();
   if(state.leagueTab==="friends"&&state.friendLeague?.code) startFriendLeaguePoll();
@@ -3628,6 +3776,7 @@ function genFriendMatchData(fix,seed){
     else {const a=pick(att,e.s1); events.push({type:"miss",playerId:a&&a.id,text:`${e.min}' 😬 ${a?a.name.split(" ")[1]:""} ${rf(actLang(MISS_ACTIONS))}`});}
   });
   events.sort((a,b)=>(parseInt(a.text)||0)-(parseInt(b.text)||0));
+  decorateMatchEvents(events,{pensOn:state.pens,oppName}); // score already locked by the seed — this only re-flavors the timeline
   const myGoals=iAmHome?hg:ag, oppGoals=iAmHome?ag:hg;
   const result=myGoals>oppGoals?"win":myGoals===oppGoals?"draw":"loss", ptGain=result==="win"?50:result==="draw"?20:5;
   let motm=null,best=-1; for(const id in pEv){const sc=pEv[id].g*3+pEv[id].a; if(sc>best){best=sc;motm=id;}}
@@ -3683,7 +3832,7 @@ function render(preserveScroll){
   const app=document.getElementById("app");
   const sw=document.getElementById("screen-wrap");
   const prevScroll=preserveScroll?sw.scrollTop:0;
-  const screens={home:renderHome,trivia:renderTrivia,reward:renderReward,collection:renderCollection,team:renderTeam,league:renderLeague,match:renderMatch,friendlysetup:renderFriendlySetup,prematch:renderPreMatch,matchreport:renderMatchReport,livematch:renderLiveMatch,market:renderMarket,account:renderAccount};
+  const screens={home:renderHome,trivia:renderTrivia,reward:renderReward,collection:renderCollection,team:renderTeam,league:renderLeague,match:renderMatch,friendlysetup:renderFriendlySetup,prematch:renderPreMatch,matchreport:renderMatchReport,livematch:renderLiveMatch,market:renderMarket,account:renderAccount,shootout:renderShootout};
   // Auto-poll friend league only when on league screen with friends tab active
   const onFriendsTab=state.screen==="league"&&state.leagueTab==="friends"&&state.friendLeague?.code;
   if(onFriendsTab&&!_friendPollTimer) startFriendLeaguePoll();
@@ -3990,6 +4139,308 @@ function newSeason(){
 function goToLeague(){
   state.screen="league";render();
 }
+
+// ══════════════════════════════════════════════════════════
+// KNOCKOUT CUP — 8 teams, QF → SF → Final, shootout on draws
+// ══════════════════════════════════════════════════════════
+const CUP_BOTS=["🦁 Lions United","🌊 Wave FC","🔥 Inferno SC","⚙️ Steel City","👻 Phantom XI","🦅 Sky Hawks","🌵 Cactus Club"];
+const CUP_STAGES=3; // rounds[0]=QF, [1]=SF, [2]=Final
+
+function _mkCupFix(a,b){return{home:a.name,away:b.name,homeIsPlayer:!!a.isPlayer,awayIsPlayer:!!b.isPlayer,played:false,hg:0,ag:0,winner:null,pens:null};}
+
+function cupStageName(r){return r===0?t('cup_stage_qf'):r===1?t('cup_stage_sf'):t('cup_stage_final');}
+
+function startCup(){
+  if(state.team.length<3){notify(t("notif_need3"),"var(--legend)");return;}
+  const bots=CUP_BOTS.map(name=>({name,avg:teamAvg(genBotTeam()),isPlayer:false}));
+  const teams=_shuffle([{name:"⭐ Your Team",avg:teamAvg(state.team),isPlayer:true},...bots]);
+  const fixtures=[]; for(let i=0;i<teams.length;i+=2)fixtures.push(_mkCupFix(teams[i],teams[i+1]));
+  state.cup={edition:((state.cup&&state.cup.edition)||0)+1,round:0,rounds:[fixtures],teams,champion:null};
+  state.leagueTab="cup";
+  saveState();render();
+}
+
+function cupTeamAvg(name){
+  const cup=state.cup; if(!cup)return 65;
+  const tm=cup.teams.find(x=>x.name===name);
+  return tm?(tm.isPlayer?teamAvg(state.team):tm.avg):65;
+}
+
+// The player's unresolved tie in the current round (unplayed, or drawn and awaiting the shootout).
+function getMyCupFixture(){
+  const cup=state.cup;
+  if(!cup||cup.champion||cup.round>=CUP_STAGES)return null;
+  return (cup.rounds[cup.round]||[]).find(f=>!f.winner&&(f.homeIsPlayer||f.awayIsPlayer))||null;
+}
+
+function simCupBotFix(f){
+  const hAvg=cupTeamAvg(f.home),aAvg=cupTeamAvg(f.away);
+  const edge=Math.round((hAvg-aAvg)/20);
+  f.hg=Math.max(0,ri(0,3)+Math.max(0,edge));
+  f.ag=Math.max(0,ri(0,3)+Math.max(0,-edge));
+  f.played=true;
+  if(f.hg===f.ag){ // straight to a simulated shootout
+    const pHome=Math.max(0.2,Math.min(0.8,0.5+(hAvg-aAvg)*0.004));
+    const homeWins=Math.random()<pHome;
+    const w=ri(4,5),l=w-ri(1,2);
+    f.pens=homeWins?{h:w,a:l}:{h:l,a:w};
+    f.winner=homeWins?f.home:f.away;
+  } else f.winner=f.hg>f.ag?f.home:f.away;
+}
+
+// Resolve as much of the bracket as possible. Idempotent: bails while the
+// player's tie (or its shootout) is pending; recurses once the player is out.
+function advanceCup(){
+  const cup=state.cup; if(!cup||cup.champion||cup.round>=CUP_STAGES)return;
+  const rd=cup.rounds[cup.round];
+  rd.forEach(f=>{if(!f.winner&&!f.homeIsPlayer&&!f.awayIsPlayer)simCupBotFix(f);});
+  if(rd.some(f=>!f.winner))return;
+  const winners=rd.map(f=>cup.teams.find(tm=>tm.name===f.winner)).filter(Boolean);
+  if(winners.length===1){
+    cup.champion=winners[0].name; cup.round=CUP_STAGES;
+    if(winners[0].isPlayer){
+      state.cupWins=(state.cupWins||0)+1;
+      state.points+=250;
+      state.collection.push(genCard("hard"));
+      notify(t('notif_cup_champion'),"var(--legend)");
+      sndGoal();
+    }
+    saveState(); return;
+  }
+  const next=[]; for(let i=0;i<winners.length;i+=2)next.push(_mkCupFix(winners[i],winners[i+1]));
+  cup.rounds.push(next); cup.round++;
+  if(!winners.some(w=>w.isPlayer)) advanceCup(); // player is out → finish the bracket instantly
+  saveState();
+}
+
+function setupCupMatch(){
+  if(!getMyCupFixture())return;
+  state.matchSetup={formation:"4-3-3",captain:state.team[0]?.id||null,swapMode:null,tactic:"calm",isCup:true};
+  state.screen="prematch";
+  render();
+}
+
+function playCupMatch(tacBonus=0){
+  const cup=state.cup; const fix=getMyCupFixture(); if(!cup||!fix)return;
+  const isHome=fix.homeIsPlayer;
+  const oppName=isHome?fix.away:fix.home;
+  const matchData=simulateMatch(state.team,genBotTeam(),oppName,tacBonus);
+  fix.played=true;
+  fix.hg=isHome?matchData.myGoals:matchData.oppGoals;
+  fix.ag=isHome?matchData.oppGoals:matchData.myGoals;
+  if(matchData.result!=="draw")fix.winner=matchData.result==="win"?(isHome?fix.home:fix.away):(isHome?fix.away:fix.home);
+  const devData=applyMatch(matchData);
+  matchData.devData=devData;
+  matchData.isCup=true; matchData.cupRound=cup.round;
+  state.points+=matchData.ptGain;
+  state.match=matchData;
+  state.matchHistory.push({result:matchData.result,myGoals:matchData.myGoals,oppGoals:matchData.oppGoals,oppName,ptGain:matchData.ptGain,isCup:true});
+  applyFatigueToTeam();
+  if(matchData.motm)markInForm(matchData.motm);
+  const tactic=state.matchSetup?.tactic||"calm";
+  const tacFatigueExtra={motivate:0,calm:0,press:8}[tactic]||0;
+  if(tacFatigueExtra>0)state.team.forEach(c=>{c.fatigue=Math.min(100,(c.fatigue||0)+tacFatigueExtra);});
+  // NOTE: bracket advancement is deferred to the end of the live match
+  // (driveLiveMatch) so the champion celebration can't spoil the result.
+  state.liveMatchState={events:matchData.events,shown:0,score:[0,0],oppName,oppTeam:getOppSquad(oppName),finalData:matchData};
+  state.screen="livematch";
+  render();
+  sndKickoff();
+  driveLiveMatch();
+}
+
+// ── Penalty shootout (cup draws) — fully interactive, decides who advances ──
+function startShootout(fd){
+  const cup=state.cup;
+  const fix=cup&&cup.round<CUP_STAGES&&(cup.rounds[cup.round]||[]).find(f=>(f.homeIsPlayer||f.awayIsPlayer)&&f.played&&!f.winner);
+  if(!fix){state.screen="matchreport";render();return;}
+  const oppName=fix.homeIsPlayer?fix.away:fix.home;
+  state.shootout={oppName,my:[],opp:[],turn:"me",over:false,win:null,last:null,sudden:false};
+  state.screen="shootout";
+  render();
+  sndWhistle();
+}
+
+function shootoutPick(dir){
+  const so=state.shootout; if(!so||so.over)return;
+  const DIRS=["L","C","R"];
+  if(so.turn==="me"){
+    const dive=rf(DIRS), scored=dir!==dive;
+    so.my.push(scored?1:0);
+    so.last={who:"me",scored,dir,other:dive};
+    so.turn="opp";
+    if(scored)sndGoal(); else sndWhistle();
+  } else {
+    const shot=rf(DIRS), saved=dir===shot;
+    so.opp.push(saved?0:1);
+    so.last={who:"opp",scored:!saved,dir,other:shot};
+    so.turn="me";
+    if(saved)sndGoal(); else sndCrowd(0.06);
+  }
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const s=sum(so.my),o=sum(so.opp),m=so.my.length,n=so.opp.length;
+  let win=null;
+  if(m<=5&&n<=5){ // best-of-5: clinched when the other side can no longer catch up
+    const rm=5-m,ro=5-n;
+    if(s>o+ro)win=true; else if(o>s+rm)win=false;
+  }
+  if(win===null&&m>=5&&n>=5&&m===n&&s!==o)win=s>o; // sudden death: decided pair by pair
+  if(win!==null){
+    so.over=true;so.win=win;
+    setTimeout(resolveShootout,1500);
+  } else if(m>=5&&n>=5)so.sudden=true;
+  render(true);
+}
+
+function resolveShootout(){
+  const so=state.shootout; const cup=state.cup; if(!so||!cup)return;
+  const fix=(cup.rounds[cup.round]||[]).find(f=>(f.homeIsPlayer||f.awayIsPlayer)&&f.played&&!f.winner);
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  if(fix){
+    const meName=fix.homeIsPlayer?fix.home:fix.away, opName=fix.homeIsPlayer?fix.away:fix.home;
+    fix.winner=so.win?meName:opName;
+    fix.pens=fix.homeIsPlayer?{h:sum(so.my),a:sum(so.opp)}:{h:sum(so.opp),a:sum(so.my)};
+  }
+  state.shootout=null;
+  notify(so.win?t('so_win'):t('so_lose'),so.win?"var(--accent)":"#f87171");
+  advanceCup(); // may crown a champion (its own celebration)
+  state.leagueTab="cup"; state.screen="league";
+  render();
+}
+
+function renderShootout(){
+  const so=state.shootout; if(!so)return renderLeague();
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const s=sum(so.my),o=sum(so.opp);
+  const slots=Math.max(5,so.my.length,so.opp.length);
+  const dots=arr=>Array.from({length:slots}).map((_,i)=>{
+    const v=arr[i];
+    if(v===undefined)return `<span style="display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);margin:0 3px;"></span>`;
+    return v?`<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--accent);margin:0 3px;box-shadow:0 0 6px var(--accentGlow);"></span>`
+            :`<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:rgba(248,113,113,.85);margin:0 3px;">&nbsp;</span>`;
+  }).join("");
+  const myTurn=so.turn==="me";
+  const last=so.last;
+  const lastLine=last?`<div style="font-size:12px;color:${last.scored===(last.who==="me")?"var(--accent)":"#f87171"};font-weight:700;margin-top:8px;">
+    ${last.who==="me"?(last.scored?t('so_you_scored'):t('so_you_missed')):(last.scored?t('so_opp_scored'):t('so_you_saved'))}
+  </div>`:"";
+  const hint=so.over?(so.win?t('so_win'):t('so_lose')):(myTurn?t('so_shoot_hint'):t('so_dive_hint'));
+  const hintCol=so.over?(so.win?"var(--accent)":"#f87171"):(myTurn?"var(--accent)":"#60a5fa");
+  return `<div class="screen fade-up" style="display:flex;flex-direction:column;align-items:center;padding:24px 16px;">
+    <div class="cut-title" style="color:var(--legend);"><span class="big" style="font-size:34px;">${t('so_header')}</span>${so.sudden&&!so.over?`<span class="sub" style="color:#f87171;">${t('so_sudden')}</span>`:""}</div>
+    <div class="glass-card" style="width:100%;max-width:380px;margin-top:18px;text-align:center;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--text4);margin-bottom:4px;">${t('lbl_you')}</div>
+          <div style="font-size:34px;font-family:var(--font-display);color:var(--accent);">${s}</div>
+          <div style="margin-top:6px;">${dots(so.my)}</div>
+        </div>
+        <div style="font-size:14px;color:var(--text4);padding:0 10px;">${t('lbl_vs')}</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--text4);margin-bottom:4px;">${so.oppName}</div>
+          <div style="font-size:34px;font-family:var(--font-display);color:#f87171;">${o}</div>
+          <div style="margin-top:6px;">${dots(so.opp)}</div>
+        </div>
+      </div>
+      ${lastLine}
+    </div>
+    <div style="margin:22px auto 0;width:min(280px,84%);height:96px;border:4px solid #fff;border-bottom:none;border-radius:6px 6px 0 0;position:relative;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px),repeating-linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px);">
+      <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:30px;">${myTurn?"🧤":"⚽"}</div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:${hintCol};margin-top:14px;">${hint}</div>
+    <div style="display:flex;gap:10px;margin-top:12px;width:100%;max-width:380px;">
+      ${[["L","◤",t('pen_left')],["C","⬆",t('pen_center')],["R","◥",t('pen_right')]].map(([d,ic,lb])=>`
+        <button onclick="shootoutPick('${d}')" ${so.over?"disabled":""} style="flex:1;padding:13px 6px;border-radius:12px;border:1.5px solid ${myTurn?"rgba(0,245,147,.45)":"rgba(96,165,250,.45)"};background:${myTurn?"rgba(0,245,147,.1)":"rgba(96,165,250,.1)"};color:#fff;font-family:var(--font-display);font-size:17px;letter-spacing:1px;line-height:1.3;opacity:${so.over?".4":"1"};">${ic}<br>${lb}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function renderCupTab(tabBar){
+  const cup=state.cup;
+  const trophies=(state.cupWins||0)>0?`<div style="font-size:12px;color:var(--legend);margin-top:6px;">${"🏆".repeat(Math.min(state.cupWins,8))}${state.cupWins>8?" ×"+state.cupWins:""}</div>`:"";
+
+  if(!cup){
+    return `<div class="screen fade-up">${tabBar}
+      <div style="padding:20px 16px;">
+        <div class="glass-card" style="text-align:center;">
+          <div style="font-size:46px;margin-bottom:10px;">🏆</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:6px;">${t('cup_intro_title')}</div>
+          <div style="font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:6px;">${t('cup_intro_desc')}</div>
+          <div style="font-size:11px;color:var(--text4);margin-bottom:16px;">${t('cup_prize_note')}</div>
+          ${trophies}
+          <button class="btn-primary" onclick="startCup()" style="width:100%;margin-top:12px;">${t('btn_start_cup')}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Lazy bracket resolution (e.g. app closed mid-flow after a decisive tie).
+  if(!cup.champion&&cup.round<CUP_STAGES&&!getMyCupFixture())advanceCup();
+
+  const myFix=getMyCupFixture();
+  const shootoutPending=myFix&&myFix.played&&!myFix.winner&&myFix.hg===myFix.ag;
+
+  const fixRow=f=>{
+    const mine=f.homeIsPlayer||f.awayIsPlayer;
+    const done=!!f.winner;
+    const score=f.played?`${f.hg}–${f.ag}${f.pens?` <span style="font-size:9px;color:var(--text4);">(${t('cup_pens_short',{h:f.pens.h,a:f.pens.a})})</span>`:""}`:t('lbl_vs');
+    const nm=n=>{
+      const won=done&&f.winner===n;
+      const isMe=(n===f.home&&f.homeIsPlayer)||(n===f.away&&f.awayIsPlayer);
+      return `<span style="font-size:12px;font-weight:${won?"700":"500"};color:${won?(isMe?"var(--accent)":"var(--text)"):done?"var(--text4)":isMe?"var(--accent)":"var(--text2)"};">${n}</span>`;
+    };
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:10px;background:${mine?"rgba(0,245,147,.05)":"rgba(255,255,255,.03)"};border:1px solid ${mine?"rgba(0,245,147,.25)":"var(--border2)"};margin-bottom:6px;">
+      <div style="flex:1;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nm(f.home)}</div>
+      <div style="font-size:12px;font-family:var(--font-display);color:var(--text3);white-space:nowrap;">${score}</div>
+      <div style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nm(f.away)}</div>
+    </div>`;
+  };
+
+  const bracket=cup.rounds.map((rd,i)=>`
+    <div style="margin-bottom:14px;">
+      <div class="sec-label" style="color:${i===cup.round?"var(--legend)":"var(--text4)"};">${cupStageName(i)}</div>
+      ${rd.map(fixRow).join("")}
+    </div>`).join("");
+
+  const champion=cup.champion?`
+    <div class="glass-card" style="text-align:center;border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.06);margin-bottom:14px;">
+      <div style="font-size:40px;margin-bottom:6px;">🏆</div>
+      <div style="font-size:12px;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;">${t('cup_champion_label')}</div>
+      <div style="font-size:20px;font-family:var(--font-display);color:var(--legend);margin-top:4px;">${cup.champion}</div>
+      ${cup.teams.find(x=>x.name===cup.champion)?.isPlayer?`<div style="font-size:12px;color:var(--accent);margin-top:6px;">${t('cup_champion_you')}</div>`:""}
+      ${trophies}
+      <button class="btn-primary" onclick="startCup()" style="width:100%;margin-top:14px;">${t('btn_new_cup')}</button>
+    </div>`:"";
+
+  const myTie=myFix?`
+    <div class="glass-card" style="border-color:rgba(245,158,11,.35);margin-bottom:14px;">
+      <div class="sec-label" style="color:var(--legend);margin-bottom:8px;">${cupStageName(cup.round)} · ${t('cup_next_tie')}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:11px;color:var(--text4);">${t('lbl_you')}</div>
+          <div style="font-size:22px;font-family:var(--font-display);color:var(--accent);">${teamAvg(state.team)}</div>
+        </div>
+        <div style="font-size:14px;color:var(--text4);">${t('lbl_vs')}</div>
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:11px;color:var(--text4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;margin:0 auto;">${myFix.homeIsPlayer?myFix.away:myFix.home}</div>
+          <div style="font-size:22px;font-family:var(--font-display);color:var(--legend);">${cupTeamAvg(myFix.homeIsPlayer?myFix.away:myFix.home)}</div>
+        </div>
+      </div>
+      ${shootoutPending
+        ?`<button class="btn-primary" onclick="startShootout(null)" style="width:100%;">${t('btn_resume_shootout')}</button>`
+        :`<button class="btn-primary" onclick="setupCupMatch()" style="width:100%;">${t('cup_play_btn')}</button>`}
+    </div>`:"";
+
+  const outBanner=cup.champion&&!cup.teams.find(x=>x.name===cup.champion)?.isPlayer?`
+    <div style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:8px 12px;font-size:12px;color:#f87171;text-align:center;margin-bottom:12px;">${t('cup_eliminated')}</div>`:"";
+
+  return `<div class="screen fade-up">${tabBar}
+    <div style="padding:16px;">
+      ${champion}${outBanner}${myTie}
+      ${bracket}
+    </div>
+  </div>`;
+}
 function pickOpp(i){state.chosenOpp=i;render();}
 function selectOppAndSetup(i){
   state.chosenOpp=i;
@@ -4062,6 +4513,11 @@ async function kickOff(){
     playLeagueMatch(tacBonus);
     return;
   }
+  // Route to cup match if flagged
+  if(state.matchSetup?.isCup){
+    playCupMatch(tacBonus);
+    return;
+  }
   // Route to friend league match if flagged
   if(state.matchSetup?.isFriendLeague){
     const fl=state.friendLeague;
@@ -4115,6 +4571,13 @@ const SCENE={
   miss:    {up:true,  side:"attack", color:"#f59e0b", titles:["OFF THE POST!","JUST WIDE!","OVER THE BAR!","SO CLOSE!"],          confetti:false, shake:true,  outcome:"miss"},
   def:     {up:false, side:"defend", color:"#60a5fa", titles:["BLOCK!","INTERCEPTED!","CLEARED!","NOT TODAY!"],                  confetti:false, shake:false, outcome:"stop"},
   goal_opp:{up:false, side:"defend", color:"#f87171", titles:["CONCEDED","BEATEN!","OH NO…"],                                    confetti:false, shake:true,  outcome:"concede"},
+  // Set pieces. "pen" scenes freeze both teams at the edge of the box; penGoal says whether the ball goes in.
+  pen_my:      {up:true,  side:"attack", color:"#00f593", titles:["PENALTY GOAL!","NO MISTAKE!","BURIED IT!","ICE COLD!"],   confetti:true,  shake:true,  outcome:"pen", penGoal:true},
+  pen_my_miss: {up:true,  side:"attack", color:"#f59e0b", titles:["SAVED!","KEEPER WINS!","STOPPED!"],                       confetti:false, shake:true,  outcome:"pen", penGoal:false},
+  pen_opp:     {up:false, side:"defend", color:"#f87171", titles:["PENALTY CONCEDED","SPOT KICK IN","OH NO…"],               confetti:false, shake:true,  outcome:"pen", penGoal:true},
+  pen_opp_save:{up:false, side:"defend", color:"#60a5fa", titles:["PENALTY SAVED!","HERO KEEPER!","DENIED!"],                confetti:true,  shake:true,  outcome:"pen", penGoal:false},
+  off_my:      {up:true,  side:"attack", color:"#f59e0b", titles:["OFFSIDE!","FLAG UP!","RULED OUT!"],                       confetti:false, shake:false, outcome:"offside"},
+  off_opp:     {up:false, side:"defend", color:"#60a5fa", titles:["OFFSIDE!","FLAG SAVES US!","NOT THIS TIME!"],             confetti:false, shake:false, outcome:"offside"},
 };
 const _rnd=(a,b)=>a+Math.random()*(b-a);
 const _pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -4179,7 +4642,83 @@ function buildPlay(kind,ev){
   const mMark=card=>myMarks.find(m=>m.card===card);
   const oMark=card=>opMarks.find(m=>m.card===card);
 
-  if(cfg.side==="attack"){
+  const isFK=!!(ev&&ev.fk)&&(cfg.outcome==="goal"||cfg.outcome==="concede");
+  const special=cfg.outcome==="pen"||cfg.outcome==="offside"||isFK;
+  const freeze=m=>{if(!m)return;m.idle=false;m.drift=false;};
+  if(cfg.outcome==="pen"){
+    // Penalty: everyone waits at the edge of the box; taker vs keeper.
+    const defGkM=(attackingMine?opMarks:myMarks).find(m=>m.gk);
+    let takerM;
+    if(attackingMine){
+      const taker=byId(ev&&ev.scorerId)||byId(ev&&ev.playerId)||myAvail.find(c=>["ST","CAM","LW","RW"].includes(c.position))||myAvail[0];
+      takerM=mMark(taker);
+    } else {
+      const oT=oppTeam.find(c=>["ST","CAM"].includes(c.position))||oppTeam.find(c=>c.position!=="GK")||oppTeam[0];
+      takerM=oMark(oT);
+    }
+    out.markers.forEach(m=>{
+      if(m===takerM||m===defGkM)return;
+      freeze(m);
+      m.ay=_clamp(Math.max(m.ay,26)+_rnd(0,8),26,96); m.ax=_clamp(m.ax,8,92);
+      P[m.id]={ax:m.ax,ay:m.ay};
+    });
+    if(takerM){takerM.scorer=attackingMine;freeze(takerM);takerM.ax=50;takerM.ay=17;P[takerM.id]={ax:50,ay:17};}
+    if(defGkM){defGkM.ax=50;defGkM.ay=3.5;P[defGkM.id]={ax:50,ay:3.5};}
+    out.ball={ax:50,ay:13};
+    const pick=ev&&ev._pick, px=pick==="L"?43:pick==="R"?57:pick==="C"?50:null;
+    const cornerX=px!=null?px:_pick([43,50,57]);
+    const diveWrong=cornerX<50?J(60,3):cornerX>50?J(40,3):(Math.random()<0.5?J(40,3):J(60,3));
+    out.steps.push({dur:650});
+    if(takerM)out.steps.push({dur:380,moves:[{id:takerM.id,ax:50,ay:11}]});
+    if(cfg.penGoal){
+      out.steps.push({dur:300,shot:true,ball:{ax:cornerX,ay:1.5},moves:defGkM?[{id:defGkM.id,ax:diveWrong,ay:J(4,1)}]:[]});
+    } else {
+      // Keeper reads it — same corner, ball pushed away.
+      out.steps.push({dur:300,shot:true,ball:{ax:cornerX,ay:4},moves:defGkM?[{id:defGkM.id,ax:cornerX,ay:J(4,1)}]:[]});
+      out.steps.push({dur:420,ball:{ax:_clamp(cornerX+(cornerX<50?-14:14),6,94),ay:14}});
+    }
+  } else if(cfg.outcome==="offside"){
+    // Through ball, runner beyond the line, flag up.
+    let passM,runM;
+    if(attackingMine){
+      const run=byId(ev&&ev.playerId)||myAvail.find(c=>["ST","LW","RW"].includes(c.position))||myAvail[0];
+      const pas=myAvail.find(c=>["CM","CAM"].includes(c.position)&&c!==run)||myAvail.find(c=>c!==run)||run;
+      runM=mMark(run);passM=mMark(pas);
+    } else {
+      const run=oppTeam.find(c=>["ST","LW","RW"].includes(c.position))||oppTeam[0];
+      const pas=oppTeam.find(c=>["CM","CAM"].includes(c.position)&&c!==run)||oppTeam.find(c=>c!==run)||run;
+      runM=oMark(run);passM=oMark(pas);
+    }
+    if(runM&&attackingMine)runM.scorer=true;
+    const pFrom=passM?P[passM.id]:{ax:45,ay:48};
+    out.ball={ax:pFrom.ax,ay:pFrom.ay};
+    out.steps.push({dur:420});
+    const rx=runM?_clamp(P[runM.id].ax+_rnd(-6,6),14,86):55;
+    out.steps.push({dur:520,ball:{ax:_clamp(pFrom.ax+_rnd(-4,4),10,90),ay:Math.max(pFrom.ay-6,20)},moves:runM?[{id:runM.id,ax:rx,ay:14}]:[]});
+    out.steps.push({dur:480,ball:{ax:rx,ay:12}});
+    out.steps.push({dur:500}); // beat before the whistle title
+  } else if(isFK){
+    // Direct free kick: wall lines up, taker curls it over.
+    const defMarks=attackingMine?opMarks:myMarks;
+    let takerM;
+    if(attackingMine){
+      const taker=byId(ev&&ev.scorerId)||myAvail.find(c=>["CAM","CM","ST"].includes(c.position))||myAvail[0];
+      takerM=mMark(taker);
+    } else {
+      const oT=oppTeam.find(c=>["CAM","CM","ST"].includes(c.position))||oppTeam[0];
+      takerM=oMark(oT);
+    }
+    const bx=J(50,10), by=27;
+    const wall=defMarks.filter(m=>!m.gk).slice(0,3);
+    wall.forEach((m,i)=>{freeze(m);m.ax=_clamp(bx-6+i*6+(50-bx)*0.25,10,90);m.ay=18;P[m.id]={ax:m.ax,ay:m.ay};});
+    if(takerM){takerM.scorer=attackingMine;freeze(takerM);takerM.ax=_clamp(bx+4,8,92);takerM.ay=by+5;P[takerM.id]={ax:takerM.ax,ay:takerM.ay};}
+    const gkM=defMarks.find(m=>m.gk); if(gkM){gkM.ax=50;gkM.ay=3.5;P[gkM.id]={ax:50,ay:3.5};}
+    out.ball={ax:bx,ay:by};
+    out.steps.push({dur:650});
+    if(takerM)out.steps.push({dur:360,moves:[{id:takerM.id,ax:_clamp(bx+1,8,92),ay:by+1}]});
+    const cornerX=Math.random()<0.5?J(42,2):J(58,2);
+    out.steps.push({dur:340,shot:true,ball:{ax:cornerX,ay:1.5},moves:gkM?[{id:gkM.id,ax:cornerX<50?J(58,3):J(42,3),ay:J(4,1)}]:[]});
+  } else if(cfg.side==="attack"){
     const scorer=byId(ev.scorerId)||myAvail.find(c=>["ST","LW","RW"].includes(c.position))||myAvail[0];
     const assist=(ev.assistId&&byId(ev.assistId))||myAvail.find(c=>["CM","CAM"].includes(c.position)&&c!==scorer)||myAvail.find(c=>c!==scorer&&c.position!=='GK')||scorer;
     const sm=mMark(scorer); if(sm){sm.scorer=true; sm.ay=_clamp(sm.ay-_rnd(8,16),16,sm.ay); P[sm.id]={ax:sm.ax,ay:sm.ay};}
@@ -4246,7 +4785,7 @@ function buildPlay(kind,ev){
   // Ambient: uninvolved outfielders drift gradually toward the attacked-goal end (ay→0),
   // spread across the steps so it's a smooth glide via transitions (never a teleport).
   const _active=new Set(); out.steps.forEach(s=>(s.moves||[]).forEach(mv=>_active.add(mv.id)));
-  const _movers=out.markers.filter(m=>!m.gk&&!_active.has(m.id));
+  const _movers=special?[]:out.markers.filter(m=>!m.gk&&!_active.has(m.id)); // set pieces: everyone holds position
   const _bEnd=(out.steps.filter(s=>s.ball).slice(-1)[0]||{}).ball; // where the ball is heading
   const _idxs=out.steps.map((s,i)=>i).filter(i=>i>0); const _nS=_idxs.length||1;
   _movers.forEach(m=>{
@@ -4295,9 +4834,39 @@ function _burstTitle(el,play){
   el.appendChild(b);
   const scan=document.createElement("div"); scan.className="cut-scan"; el.appendChild(scan);
 }
+// Interactive penalty: the player picks a corner before the scene plays out.
+// The engine has already decided scored/saved — the pick steers the animation
+// (scored → keeper dives the other way; saved → keeper reads it), so the score
+// can never desync from the pre-computed result. 6s to choose, else auto-pick.
+function penaltyChooser(el){
+  return new Promise(res=>{
+    let done=false,tm=null;
+    const fin=d=>{if(done)return;done=true;clearTimeout(tm);window._penPick=null;el.classList.remove("show");el.onclick=null;el.innerHTML="";res(d||_pick(["L","C","R"]));};
+    el.innerHTML=`<div class="cut-bg"></div>
+      <div style="position:relative;z-index:5;width:min(92vw,420px);text-align:center;padding:0 12px;">
+        <div class="cut-title" style="color:var(--accent);"><span class="big" style="font-size:44px;">PENALTY!</span><span class="sub">${t('pen_pick_hint')}</span></div>
+        <div style="margin:26px auto 0;width:min(280px,80%);height:96px;border:4px solid #fff;border-bottom:none;border-radius:6px 6px 0 0;position:relative;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px),repeating-linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.14) 9px 10px);">
+          <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:30px;">🧤</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          ${[["L","◤",t('pen_left')],["C","⬆",t('pen_center')],["R","◥",t('pen_right')]].map(([d,ic,lb])=>`
+            <button onclick="window._penPick&&window._penPick('${d}')" style="flex:1;padding:13px 6px;border-radius:12px;border:1.5px solid rgba(0,245,147,.45);background:rgba(0,245,147,.1);color:#fff;font-family:var(--font-display);font-size:17px;letter-spacing:1px;line-height:1.3;">${ic}<br>${lb}</button>`).join("")}
+        </div>
+        <div style="height:4px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,.1);margin-top:16px;"><div class="qbar-fill" style="animation-duration:6s;"></div></div>
+      </div>`;
+    el.classList.add("show");
+    window._penPick=d=>fin(d);
+    tm=setTimeout(()=>fin(null),6000);
+    sndWhistle();
+  });
+}
 async function playScene(kind,ev){
   const el=document.getElementById("cutscene"); if(!el) return;
   const gen=_liveGen, alive=()=>state.screen==="livematch"&&gen===_liveGen;
+  if((kind==="pen_my"||kind==="pen_my_miss")&&ev&&!ev._pick){
+    ev._pick=await penaltyChooser(el);
+    if(!alive())return;
+  }
   const play=buildPlay(kind,ev); if(!play) return;
   el.innerHTML=`<div class="cut-bg"></div>
     <div class="cut-pitch">
@@ -4340,20 +4909,31 @@ async function driveLiveMatch(){
       sndCrowd(0.07);
       await _delay(900); if(!active())return;
       const fd=lm.finalData;
+      // Drawn cup tie → straight to the shootout, no result notify (nothing is decided yet).
+      if(fd.isCup&&fd.result==="draw"){
+        notify(t('so_start'),"var(--legend)");
+        await _delay(1500); if(!active())return;
+        startShootout(fd);
+        return;
+      }
       if(fd.result==="win") notify(t("notif_win",{pts:fd.ptGain}),"var(--accent)");
       else if(fd.result==="draw") notify(t("notif_draw",{pts:fd.ptGain}),"var(--legend)");
       else notify(t("notif_loss",{pts:fd.ptGain}),"#f87171");
       await _delay(1700); if(!active())return;
+      if(fd.isCup) advanceCup(); // decisive cup tie → resolve the bracket now (champion celebration lands here)
       state.screen="matchreport"; render();
       return;
     }
     const ev=lm.events[lm.shown];
     // Play the cutscene FIRST; the action only lands on the board (sound + score + feed line) afterwards.
-    const willCut=(ev.type==="goal_my"||ev.type==="goal_opp")||((ev.type==="def"||ev.type==="miss")&&Math.random()<0.6);
+    const isPen=ev.type==="pen_my"||ev.type==="pen_my_miss"||ev.type==="pen_opp"||ev.type==="pen_opp_save";
+    const isOff=ev.type==="off_my"||ev.type==="off_opp";
+    const willCut=(ev.type==="goal_my"||ev.type==="goal_opp")||isPen||(isOff&&Math.random()<0.55)||((ev.type==="def"||ev.type==="miss")&&Math.random()<0.6);
     if(willCut) await playScene(ev.type,ev);
     if(!active()){hideCutscene();return;}
-    if(ev.type==="goal_my"){lm.score[0]++;sndGoal();}
-    else if(ev.type==="goal_opp"){lm.score[1]++;sndGoal();}
+    if(ev.type==="goal_my"||ev.type==="pen_my"){lm.score[0]++;sndGoal();}
+    else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;sndGoal();}
+    else if(isPen||isOff){sndWhistle();sndCrowd(0.04);}
     else{sndCrowd(0.03);}
     lm.shown++;
     render(true);
@@ -4568,7 +5148,7 @@ function renderAccount(){
       ${feedbackCard()}
     </div>`;
   }
-  const hasProgress=state.collection.length||state.points!==500||state.matchHistory.length;
+  const hasProgress=state.collection.length||state.points!==START_PTS||state.matchHistory.length;
   return `<div class="screen fade-up" style="padding:16px;">
     <div class="glass-card" style="text-align:center;">
       <div style="font-size:36px;">⚽</div>
