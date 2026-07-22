@@ -4261,6 +4261,9 @@ function render(preserveScroll){
 // ══════════════════════════════════════════════════════════
 function navTo(screen){
   state.screen=screen; render();
+  // Opportunistic sync: pick up any trade the other side has already acted on
+  // without making the user specifically open the Trade screen (or reload).
+  if(state.account&&["home","account","trade","collection","team"].includes(screen)) refreshTrades();
 }
 function goTo(s){navTo(s);}
 
@@ -5752,16 +5755,20 @@ async function refreshTrades(){
   try{
     const d=await tradeApi("list",{});
     state.tradeList=d.trades||[];
-    for(const tr of state.tradeList){
-      if(tr.status==="accepted"&&tr.from_username.toLowerCase()===state.account.username.toLowerCase()){
-        state.collection=state.collection.filter(c=>c.id!==tr.offer_card.id);
-        state.team=state.team.filter(c=>c.id!==tr.offer_card.id);
-        if(!state.collection.some(c=>c.id===tr.request_card.id))state.collection.push(tr.request_card);
-        saveState();
+    const mine=state.tradeList.filter(tr=>tr.status==="accepted"&&tr.from_username.toLowerCase()===state.account.username.toLowerCase());
+    if(mine.length){
+      // Don't hand-reconstruct the swap client-side — pull the account's
+      // already-correct post-trade collection/team straight from the server
+      // (trade.js already mutated it) so there's no chance of the local
+      // delta math drifting from what actually got persisted.
+      const auto=await accountApi("auto",{token:state.account.token});
+      if(auto.data)applySave(auto.data);
+      for(const tr of mine){
         notify(t('notif_trade_completed',{name:tr.request_card.name}),"var(--accent)");
         tradeApi("ack",{tradeId:tr.id}).catch(()=>{});
         tr.status="done";
       }
+      saveState();
     }
   }catch(e){console.warn("refreshTrades failed:",e);}
   render(true);
@@ -6034,7 +6041,7 @@ handlePurchaseReturn();
 render();
 // Verify purchases only after auto-login: the cloud save is applied there and
 // would overwrite a grant that happened before it.
-autoLoginBoot().finally(()=>verifyPendingPurchase());
+autoLoginBoot().finally(()=>{verifyPendingPurchase();refreshTrades();});
 
 if("serviceWorker" in navigator && !IN_SANDBOX){
   window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(e=>console.warn("SW register failed:",e)));
