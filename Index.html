@@ -5243,10 +5243,13 @@ function penMiniGame(opts={}){
         ball.style.width="15px";ball.style.height="15px";
         keeper.classList.remove("idle");
         keeper.classList.add(out.k===0?"dL":out.k===2?"dR":"dC");
+        // Roar + net ripple land as the ball crosses the line (the eased flight
+        // arrives well before it settles), not when the title pops 300ms later.
+        if(out.scored)setTimeout(()=>{goal.classList.add("ripple");sndGoal();},260);
         setTimeout(()=>{
           const wrap=$("#pgWrap");
           let title,color;
-          if(out.scored){goal.classList.add("ripple");title=_pick(["GOAL!","TOP BINS!","BURIED IT!","UNSTOPPABLE!"]);color="#00f593";sndGoal();}
+          if(out.scored){title=_pick(["GOAL!","TOP BINS!","BURIED IT!","UNSTOPPABLE!"]);color="#00f593";}
           else if(out.over){title=_pick(["OVER THE BAR!","SKIED IT!"]);color="#f59e0b";sndOoh(0.2);}
           else if(out.post){title=_pick(["OFF THE POST!","SO CLOSE!"]);color="#f59e0b";sndOoh(0.22);}
           else {title=_pick(["SAVED!","KEEPER WINS!","WHAT A STOP!"]);color="#f87171";} // your pen saved — crowd bed only
