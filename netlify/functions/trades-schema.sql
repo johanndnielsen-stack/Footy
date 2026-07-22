@@ -23,3 +23,11 @@ create index if not exists trades_to_idx on trades (to_username, status);
 create index if not exists trades_from_idx on trades (from_username, status);
 
 alter table trades enable row level security;
+
+-- Table-level grant for the service role. RLS-with-no-policies blocks
+-- row access for everyone except service_role (which bypasses RLS), but
+-- PostgREST still checks a plain GRANT before RLS even applies — accounts
+-- got this automatically from the project's default privileges, but a table
+-- created straight from the SQL editor doesn't always inherit that, which is
+-- why "propose" was failing with 42501 "permission denied for table trades".
+grant select, insert, update, delete on table trades to service_role;
