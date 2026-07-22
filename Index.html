@@ -738,6 +738,7 @@ const TRANSLATIONS={
     daily_claimed:"✅  Daily Bonus Claimed",daily_unclaimed:"🎁  Claim Daily Bonus  ·  +100 pts",
     footer_hint:"Correct answers earn cards · Matches develop players\nLifelines cost 30 pts each",
     install_title:"📲 Install Footy Cards",install_desc:"Add it to your home screen for one-tap access, offline play, and no browser bars.",install_btn:"Install App",
+    install_desc_ios:"Tap the Share icon below, then \"Add to Home Screen\", for one-tap access and no browser bars.",
     win_label:"🏆 WIN",draw_label:"🤝 DRAW",loss_label:"💔 LOSS",
     q_of:"Q{n} of 3",
     correct_msg:"Correct! +{pts} pts",wrong_msg:"❌ Wrong!",
@@ -911,6 +912,7 @@ const TRANSLATIONS={
     daily_claimed:"✅  Daglig Bonus Hentet",daily_unclaimed:"🎁  Hent Daglig Bonus  ·  +100 pts",
     footer_hint:"Rigtige svar giver kort · Kampe udvikler spillere\nLivreddere koster 30 pts hver",
     install_title:"📲 Installer Footy Cards",install_desc:"Tilføj den til din startskærm for adgang med ét tryk, offline-spil og ingen browser-bjælker.",install_btn:"Installer App",
+    install_desc_ios:"Tryk på Del-ikonet nedenfor, og vælg \"Føj til hjemmeskærm\" for adgang med ét tryk og ingen browser-bjælker.",
     win_label:"🏆 SEJR",draw_label:"🤝 UAFGJORT",loss_label:"💔 TAB",
     q_of:"S{n} af 3",
     correct_msg:"Korrekt! +{pts} pts",wrong_msg:"❌ Forkert!",
@@ -1084,6 +1086,7 @@ const TRANSLATIONS={
     daily_claimed:"✅  Bono Diario Reclamado",daily_unclaimed:"🎁  Reclamar Bono Diario  ·  +100 pts",
     footer_hint:"Respuestas correctas dan cartas · Los partidos desarrollan jugadores\nLos comodines cuestan 30 pts cada uno",
     install_title:"📲 Instalar Footy Cards",install_desc:"Añádela a tu pantalla de inicio para acceso con un toque, juego sin conexión y sin barras del navegador.",install_btn:"Instalar App",
+    install_desc_ios:"Toca el icono Compartir de abajo y luego \"Añadir a pantalla de inicio\" para acceso con un toque y sin barras del navegador.",
     win_label:"🏆 VICTORIA",draw_label:"🤝 EMPATE",loss_label:"💔 DERROTA",
     q_of:"P{n} de 3",
     correct_msg:"¡Correcto! +{pts} pts",wrong_msg:"❌ ¡Incorrecto!",
@@ -3707,9 +3710,22 @@ function renderLiveMatch(){
   </div>`;
 }
 
-// Shared Founder Pack promo card — shown on Home (front) and Market.
 function installBannerHTML(){
-  if(!deferredInstallPrompt||installDismissed)return"";
+  if(installDismissed)return"";
+  const isStandalone=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
+  if(isStandalone)return"";
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    return`
+      <div class="glass-card" style="margin-bottom:16px;border-color:rgba(0,245,147,.3);">
+        <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;">${t('install_title')}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">${t('install_desc_ios')}</div>
+        <div style="text-align:right;">
+          <button class="btn-ghost" style="padding:0 14px;" onclick="dismissInstallBanner()">✕</button>
+        </div>
+      </div>`;
+  }
+  if(!deferredInstallPrompt)return"";
   return`
       <div class="glass-card" style="margin-bottom:16px;border-color:rgba(0,245,147,.3);">
         <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;">${t('install_title')}</div>
