@@ -6072,6 +6072,7 @@ function renderTrade(){
 // ══════════════════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════════════════
+let deferredInstallPrompt=null, installDismissed=false;
 handleJoinLink();
 handlePurchaseReturn();
 render();
@@ -6083,7 +6084,6 @@ if("serviceWorker" in navigator && !IN_SANDBOX){
   window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(e=>console.warn("SW register failed:",e)));
 }
 
-let deferredInstallPrompt=null, installDismissed=false;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   deferredInstallPrompt=e;
