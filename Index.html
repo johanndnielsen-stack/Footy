@@ -738,7 +738,7 @@ const TRANSLATIONS={
     no_cards_yet:"No cards yet!",btn_play_now:"⚽ Play Now",in_team:"✅ In Team",
     label_avg_ovr:"Avg OVR",label_goals:"Goals",label_badges:"Badges",
     add_from_coll:"Add from Collection",earn_first:"⚽ Earn Cards First",all_in_team:"All cards are in your team!",
-    need_cards:"You need at least 3 cards in your team to play a match!",
+    need_cards:"You need a full 11-player team to play a match! {n} more to go.",
     earn_trivia:"Earn Cards via Trivia",
     your_lineup:"Your Line-up",choose_opp:"Choose Opponent",
     diff_tough:"💀 Tough",diff_easier:"😎 Easier",diff_even:"⚡ Even",
@@ -752,7 +752,7 @@ const TRANSLATIONS={
     btn_simulate:"⏩  Simulate Week {n}",
     notif_daily:"🎁 Daily bonus: +100 pts!",notif_hf_saved:"🎨 HF token saved! Card art enabled",
     notif_hf_enter:"Please enter your HF token",notif_already_team:"Already in team!",
-    notif_too_weak:"Card too weak to replace anyone!",notif_need3:"Need at least 3 cards in team!",
+    notif_too_weak:"Card too weak to replace anyone!",notif_need3:"Need a full 11-player team!",
     notif_fifty:"✂️ 50:50 used! -30 pts",notif_audience:"📊 Audience poll revealed! -30 pts",
     notif_phone_says:'📞 Friend says: "{hint}"',
     notif_win:"🏆 WIN! +{pts} pts",notif_draw:"🤝 DRAW · +{pts} pts",notif_loss:"💔 Defeat · +{pts} pts",
@@ -899,7 +899,7 @@ const TRANSLATIONS={
     no_cards_yet:"Ingen kort endnu!",btn_play_now:"⚽ Spil Nu",in_team:"✅ På holdet",
     label_avg_ovr:"Snit OVR",label_goals:"Mål",label_badges:"Badges",
     add_from_coll:"Tilføj fra Samling",earn_first:"⚽ Optjen Kort Først",all_in_team:"Alle kort er på dit hold!",
-    need_cards:"Du skal bruge mindst 3 kort i dit hold for at spille kamp!",
+    need_cards:"Du skal bruge et fuldt hold på 11 spillere for at spille kamp! {n} mere.",
     earn_trivia:"Optjen Kort via Quiz",
     your_lineup:"Dit Opstilling",choose_opp:"Vælg Modstander",
     diff_tough:"💀 Svær",diff_easier:"😎 Nemmere",diff_even:"⚡ Jævn",
@@ -913,7 +913,7 @@ const TRANSLATIONS={
     btn_simulate:"⏩  Simulér Uge {n}",
     notif_daily:"🎁 Daglig bonus: +100 pts!",notif_hf_saved:"🎨 HF token gemt! Kortkunst aktiveret",
     notif_hf_enter:"Indtast venligst dit HF token",notif_already_team:"Allerede på holdet!",
-    notif_too_weak:"Kortet er for svagt til at erstatte nogen!",notif_need3:"Du skal bruge mindst 3 kort i holdet!",
+    notif_too_weak:"Kortet er for svagt til at erstatte nogen!",notif_need3:"Du skal bruge et fuldt hold på 11 spillere!",
     notif_fifty:"✂️ 50:50 brugt! -30 pts",notif_audience:"📊 Publikumsafstemning afsløret! -30 pts",
     notif_phone_says:'📞 Ven siger: "{hint}"',
     notif_win:"🏆 SEJR! +{pts} pts",notif_draw:"🤝 UAFGJORT · +{pts} pts",notif_loss:"💔 Nederlag · +{pts} pts",
@@ -1060,7 +1060,7 @@ const TRANSLATIONS={
     no_cards_yet:"¡Sin cartas aún!",btn_play_now:"⚽ Jugar Ahora",in_team:"✅ En el Equipo",
     label_avg_ovr:"OVR Med",label_goals:"Goles",label_badges:"Insignias",
     add_from_coll:"Añadir de Colección",earn_first:"⚽ Gana Cartas Primero",all_in_team:"¡Todas las cartas están en tu equipo!",
-    need_cards:"¡Necesitas al menos 3 cartas en tu equipo para jugar!",
+    need_cards:"¡Necesitas un equipo completo de 11 jugadores para jugar! Te faltan {n}.",
     earn_trivia:"Gana Cartas con Trivia",
     your_lineup:"Tu Alineación",choose_opp:"Elige Oponente",
     diff_tough:"💀 Difícil",diff_easier:"😎 Más Fácil",diff_even:"⚡ Igualado",
@@ -1074,7 +1074,7 @@ const TRANSLATIONS={
     btn_simulate:"⏩  Simular Semana {n}",
     notif_daily:"🎁 Bono diario: +100 pts!",notif_hf_saved:"🎨 Token HF guardado! Arte activado",
     notif_hf_enter:"Por favor ingresa tu token HF",notif_already_team:"¡Ya está en el equipo!",
-    notif_too_weak:"¡La carta es demasiado débil para reemplazar a alguien!",notif_need3:"¡Necesitas al menos 3 cartas en el equipo!",
+    notif_too_weak:"¡La carta es demasiado débil para reemplazar a alguien!",notif_need3:"¡Necesitas un equipo completo de 11 jugadores!",
     notif_fifty:"✂️ 50:50 usado! -30 pts",notif_audience:"📊 ¡Votación del público revelada! -30 pts",
     notif_phone_says:'📞 Tu amigo dice: "{hint}"',
     notif_win:"🏆 ¡VICTORIA! +{pts} pts",notif_draw:"🤝 EMPATE · +{pts} pts",notif_loss:"💔 Derrota · +{pts} pts",
@@ -1262,6 +1262,7 @@ const JERSEY_COLORS=["#e11d48","#2563eb","#16a34a","#9333ea","#ea580c","#0891b2"
 const BOT_NAMES=["⚡ BlazeBot","🤖 TactiBot","🦾 IronFC","🌀 VortexAI","🎯 PrecisionBot"];
 const DIFF_COLORS={easy:"#00f593",medium:"#a78bfa",hard:"#f59e0b"};
 const DIFF_PTS={easy:10,medium:25,hard:50};
+const LEGEND_CHANCE=0.25; // chance a perfect trivia round's hard question actually pays out a Legend card
 const START_PTS=150; // starting balance for brand-new players (existing saves keep theirs)
 const XP_PER_LEVEL=100;
 const ACHIEVEMENTS={
@@ -1743,7 +1744,7 @@ function statusLabel(card){
   return `🟢 Fresh`;
 }
 function cardMarketValue(card){
-  const base=card.difficulty==="hard"?150:card.difficulty==="medium"?65:30;
+  const base=card.difficulty==="hard"?1000:card.difficulty==="medium"?65:30;
   const s=getStatus(card);
   const lvlBonus=(card.level||1)*5;
   const formBonus=(card.inForm?20:0);
@@ -2395,7 +2396,7 @@ function onboardingTipsHTML(){
     {show:!state.account, icon:"👤", title:t('tip_account_title'), sub:t('tip_account_sub'), onclick:"navTo('account')"},
     {show:state.collection.length===0, icon:"⚽", title:t('tip_cards_title'), sub:t('tip_cards_sub'), onclick:"startRound()"},
     {show:state.collection.length>0&&state.team.length<11, icon:"🧤", title:t('tip_squad_title'), sub:t('tip_squad_sub',{n:11-state.team.length}), onclick:"navTo('collection')"},
-    {show:state.team.length>=3&&state.matchHistory.length===0, icon:"🏟️", title:t('tip_match_title'), sub:t('tip_match_sub'), onclick:"navTo('match')"},
+    {show:state.team.length>=11&&state.matchHistory.length===0, icon:"🏟️", title:t('tip_match_title'), sub:t('tip_match_sub'), onclick:"navTo('match')"},
     {show:state.team.length>=11&&!state.friendLeague?.code, icon:"🌐", title:t('tip_friends_title'), sub:t('tip_friends_sub'), onclick:"state.leagueTab='friends';goToLeague()"},
   ].filter(tp=>tp.show);
   if(!tips.length) return "";
@@ -2448,6 +2449,9 @@ function renderHome(){
         <div class="hero-chip"><div class="hero-chip-lbl">${t('chip_avg')}</div><div class="hero-chip-val">${teamAvg(state.team)||"–"}</div></div>
       </div>
     </div>
+
+    <!-- Founder Pack promo -->
+    <div style="padding:16px 16px 0;">${founderPromoHTML()}</div>
 
     <!-- Getting started tips (auto-hide once each step is done) -->
     ${onboardingTipsHTML()}
@@ -2763,9 +2767,9 @@ function renderSquad(){
 
 // ── Unified Match Hub
 function renderMatch(){
-  if(state.team.length<3) return `<div class="screen fade-up" style="padding:40px 16px;text-align:center;">
+  if(state.team.length<11) return `<div class="screen fade-up" style="padding:40px 16px;text-align:center;">
     <div style="font-size:40px;margin-bottom:12px;">⚽</div>
-    <div style="font-size:14px;color:var(--text3);margin-bottom:20px;">${t('need_cards')}</div>
+    <div style="font-size:14px;color:var(--text3);margin-bottom:20px;">${t('need_cards',{n:11-state.team.length})}</div>
     <button class="btn-primary" onclick="startRound()">${t('earn_trivia')}</button>
   </div>`;
 
@@ -3655,6 +3659,22 @@ function renderLiveMatch(){
   </div>`;
 }
 
+// Shared Founder Pack promo card — shown on Home (front) and Market.
+function founderPromoHTML(){
+  if(state.founder)return`
+      <div class="glass-card" style="margin-bottom:16px;border-color:rgba(245,158,11,.35);text-align:center;font-size:12px;color:var(--legend);">${t('shop_founder_owned')}</div>`;
+  if(!FOUNDER_PAY_LINK)return"";
+  return`
+      <div class="glass-card" style="margin-bottom:16px;border-color:rgba(245,158,11,.35);">
+        <div style="font-size:14px;font-weight:700;color:var(--legend);margin-bottom:4px;">${t('shop_founder_title')}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">${t('shop_founder_desc')}</div>
+        ${state.account
+          ?`<button class="btn-primary" style="width:100%;background:var(--legend);border-color:var(--legend);" onclick="buyFounderPack()">${t('shop_founder_buy')}</button>`
+          :`<div style="font-size:11px;color:var(--text4);margin-bottom:8px;">${t('shop_founder_signin')}</div>
+             <button class="btn-ghost full" style="width:100%;" onclick="navTo('account')">${t('screen_account_title')}</button>`}
+      </div>`;
+}
+
 // ══════════════════════════════════════════════════════════
 // RENDER — TRANSFER MARKET
 // ══════════════════════════════════════════════════════════
@@ -3671,17 +3691,7 @@ function renderMarket(){
         <div style="font-size:10px;color:var(--text4);margin-top:4px;">${t('balance_hint')}</div>
       </div>
 
-      ${state.founder?`
-      <div class="glass-card" style="margin-bottom:16px;border-color:rgba(245,158,11,.35);text-align:center;font-size:12px;color:var(--legend);">${t('shop_founder_owned')}</div>`
-      :FOUNDER_PAY_LINK?`
-      <div class="glass-card" style="margin-bottom:16px;border-color:rgba(245,158,11,.35);">
-        <div style="font-size:14px;font-weight:700;color:var(--legend);margin-bottom:4px;">${t('shop_founder_title')}</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">${t('shop_founder_desc')}</div>
-        ${state.account
-          ?`<button class="btn-primary" style="width:100%;background:var(--legend);border-color:var(--legend);" onclick="buyFounderPack()">${t('shop_founder_buy')}</button>`
-          :`<div style="font-size:11px;color:var(--text4);margin-bottom:8px;">${t('shop_founder_signin')}</div>
-             <button class="btn-ghost full" style="width:100%;" onclick="navTo('account')">${t('screen_account_title')}</button>`}
-      </div>`:""}
+      ${founderPromoHTML()}
 
       <div class="sec-label">${t('sec_market_available')}</div>
       ${market.length===0?`<div style="color:var(--text4);text-align:center;padding:20px 0;">${t('market_refresh')}</div>`
@@ -4262,7 +4272,15 @@ function answerQ(answer){
 function nextQ(){
   const r=state.round;
   if(r.current>=2){
-    state.lastCards=r.answers.filter(a=>a.correct).map(a=>genCard(a.q.diff));
+    // Legend (hard-tier) cards are rare: only possible on a perfect 3/3 round,
+    // and even then only a fraction of the time — otherwise the hard question's
+    // reward downgrades to a medium-tier card instead of losing the card entirely.
+    const perfectRound=r.correct===3;
+    state.lastCards=r.answers.filter(a=>a.correct).map(a=>{
+      let diff=a.q.diff;
+      if(diff==="hard"&&!(perfectRound&&Math.random()<LEGEND_CHANCE))diff="medium";
+      return genCard(diff);
+    });
     state.collection.push(...state.lastCards);
     // Recover fatigue after studying (trivia round)
     recoverFatigue();
@@ -4328,7 +4346,7 @@ function addToTeam(cardId){
 const TOTAL_WEEKS=10; // season length
 
 function startLeague(){
-  if(state.team.length<3){notify(t("notif_need3"),"var(--legend)");return;}
+  if(state.team.length<11){notify(t("notif_need3"),"var(--legend)");return;}
   const myAvg=teamAvg(state.team);
   const botEntries=BOT_NAMES.map(name=>({name,avg:teamAvg(genBotTeam()),isPlayer:false,w:0,d:0,l:0,gf:0,ga:0,pts:0}));
   const playerEntry={name:"⭐ Your Team",avg:myAvg,isPlayer:true,w:0,d:0,l:0,gf:0,ga:0,pts:0};
@@ -4515,7 +4533,7 @@ function _mkCupFix(a,b){return{home:a.name,away:b.name,homeIsPlayer:!!a.isPlayer
 function cupStageName(r){return r===0?t('cup_stage_qf'):r===1?t('cup_stage_sf'):t('cup_stage_final');}
 
 function startCup(){
-  if(state.team.length<3){notify(t("notif_need3"),"var(--legend)");return;}
+  if(state.team.length<11){notify(t("notif_need3"),"var(--legend)");return;}
   const bots=CUP_BOTS.map(name=>({name,avg:teamAvg(genBotTeam()),isPlayer:false}));
   const teams=_shuffle([{name:"⭐ Your Team",avg:teamAvg(state.team),isPlayer:true},...bots]);
   const fixtures=[]; for(let i=0;i<teams.length;i+=2)fixtures.push(_mkCupFix(teams[i],teams[i+1]));
