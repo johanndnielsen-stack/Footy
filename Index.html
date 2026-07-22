@@ -1463,7 +1463,7 @@ function playSample(key,{vol=0.8,dur=null,delay=0,fade=0.03,rate=1,lp=0}={}){
     g.gain.setValueAtTime(vol,t+Math.max(fade,realDur-0.14));
     g.gain.linearRampToValueAtTime(0.0001,t+realDur);
     src.start(t,off);src.stop(t+realDur+0.03);
-    return true;
+    return {src,g}; // handle so callers (VO) can cut a clip short; unused elsewhere
   }catch(e){return false;}
 }
 function playTone(freq,dur,type="sine",vol=0.18,delay=0){
@@ -1613,7 +1613,7 @@ function playCrowdLoop(o){
   }catch(e){_crowdBed=null;}
 }
 function crowdStart(){
-  _crowdWanted=true;
+  _crowdWanted=true; warmVO();
   if(_crowdBed||_crowdPending)return;
   _crowdPending=true;
   const i=Math.floor(Math.random()*CROWD_FILES.length);
@@ -1632,7 +1632,64 @@ function crowdStop(){
   }catch(e){}
   _crowdBed=null;
 }
-// ── Game-facing cues — only the clips Johann picked, nothing else. ──
+// ── Commentator voice-overs (Johann's British-commentator voice) ──────
+// Short, kid-simple lines grouped by moment; one is picked at random each
+// time so it never feels repetitive. Lazy-decoded and cached for the
+// session (reusing _sbuf/_sonset via the file URL as the key). Nothing
+// plays until the mp3s land in sounds/commentary/ — missing files are
+// silent, exactly like the rest of the engine.
+const VO_FILES={
+  goal_yes :["goal_yes_1","goal_yes_2","goal_yes_3","goal_yes_4","goal_yes_5"], // you score
+  goal_no  :["goal_no_1","goal_no_2","goal_no_3","goal_no_4"],                  // you concede
+  pen_yes  :["pen_yes_1","pen_yes_2","pen_yes_3"],                              // you score a penalty
+  pen_saved:["pen_saved_1","pen_saved_2","pen_saved_3"],                        // your penalty saved
+  keeper   :["keeper_1","keeper_2","keeper_3"],                                 // your keeper saves theirs
+  miss     :["miss_1","miss_2","miss_3","miss_4"],                             // near miss
+  block    :["block_1","block_2","block_3"],                                    // block / defending
+};
+const _voUrl=n=>"sounds/commentary/"+n+".mp3";
+let _voWarmed=false;
+// Fetch+decode one clip into the shared buffer cache (idempotent, silent on fail).
+function ensureVO(url){
+  if(_sbuf[url])return Promise.resolve(true);
+  const ac=_ac||getAC();
+  return fetch(url).then(r=>r.ok?r.arrayBuffer():Promise.reject())
+    .then(ab=>ac.decodeAudioData(ab))
+    .then(buf=>{ _sbuf[url]=buf; _sonset[url]=bufOnset(buf); return true; })
+    .catch(()=>false);
+}
+// Warm every line once a live match starts, so the first goal never lags on a fetch.
+function warmVO(){ if(_voWarmed)return; _voWarmed=true;
+  Object.values(VO_FILES).forEach(a=>a.forEach(n=>ensureVO(_voUrl(n)))); }
+// Briefly duck the crowd bed so a kid can hear the words, then restore it.
+function duckCrowd(after,dur,to){
+  if(!_crowdBed||!_ac)return;
+  try{ const g=_crowdBed.g,t=_ac.currentTime+after;
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(Math.max(0.0011,g.gain.value),t);
+    g.gain.linearRampToValueAtTime(to,t+0.12);
+    g.gain.setValueAtTime(to,t+dur);
+    g.gain.linearRampToValueAtTime(0.5,t+dur+0.5);
+  }catch(e){}
+}
+// Say one random line from a category. delay = lead-in after the roar (an A/V
+// knob if it feels early/late); the crowd ducks under it for clarity.
+let _voNode=null;
+function sayVO(cat,{delay=0.35,vol=1.0,duck=0.3}={}){
+  const list=VO_FILES[cat]; if(!list||!list.length)return;
+  const url=_voUrl(list[Math.floor(Math.random()*list.length)]);
+  const fire=()=>{ const buf=_sbuf[url]; if(!buf)return;
+    // Cut off any still-playing line so two commentators never talk at once.
+    if(_voNode){ try{ const {src,g}=_voNode,t=getAC().currentTime;
+      g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value,t);
+      g.gain.linearRampToValueAtTime(0.0001,t+0.08); src.stop(t+0.1);
+    }catch(e){} _voNode=null; }
+    duckCrowd(delay,buf.duration+0.2,duck);
+    _voNode=playSample(url,{vol,delay,fade:0.02})||null;
+  };
+  if(_sbuf[url])fire(); else ensureVO(url).then(ok=>{ if(ok)fire(); });
+}
+// ── Game-facing cues — the clips Johann picked, plus his commentator voice. ──
 // Whistle (candidate 2) and kick (candidate 2) were "too high", so both are
 // pitched down (rate<1) and gently low-passed to cut the shrill top.
 function sndWhistle(){ playSample("whistle",{vol:0.5,dur:0.8,rate:0.8,lp:3200}); }
@@ -1644,7 +1701,7 @@ function sndFullTime(){
 function sndKickoff(){ playSample("whistle",{vol:0.55,dur:0.95,rate:0.8,lp:3200}); }
 function sndGoal(){ playSample("goal",{vol:0.85,dur:3.0}); }           // stadium roar, first 3s
 function sndKick(vol=0.75){ playSample("kick",{vol:Math.min(1,vol),rate:0.78,lp:1400}); }
-// "Don't use anything else": no groan, cheer, commentator or synth cues.
+// Commentator voice now rides on top of these (see sayVO). Still no synth cues.
 function sndOoh(){}
 function sndCorrect(){}
 function sndWrong(){}
@@ -5464,6 +5521,8 @@ async function driveLiveMatch(){
       if(ev.genuine)applyPenOverride(lm.finalData,ev,scoredNow);
       if(scoredNow)lm.score[0]++;
       if(!active()){hideCutscene();return;}
+      // Commentator trails the mini-game's own roar/save beat.
+      sayVO(scoredNow?"pen_yes":"pen_saved",{delay:scoredNow?0.4:0.15});
       lm.shown++;
       render(true);
       await _delay(1100);
@@ -5475,11 +5534,12 @@ async function driveLiveMatch(){
     const willCut=(ev.type==="goal_my"||ev.type==="goal_opp")||isPen||(isOff&&Math.random()<0.55)||((ev.type==="def"||ev.type==="miss")&&Math.random()<0.6);
     if(willCut) await playScene(ev.type,ev);
     if(!active()){hideCutscene();return;}
-    if(ev.type==="goal_my"){lm.score[0]++;sndGoal();}
-    else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;} // opponent scores — crowd bed only
-    else if(ev.type==="pen_opp_save"){sndGoal();} // keeper hero moment: crowd erupts
+    if(ev.type==="goal_my"){lm.score[0]++;sndGoal();sayVO("goal_yes");}
+    else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;sndGoal();sayVO("goal_no");} // opponent scores — same roar + concede call
+    else if(ev.type==="pen_opp_save"){sndGoal();sayVO("keeper");} // keeper hero moment: crowd erupts
+    else if(ev.type==="miss"){sayVO("miss");}
+    else if(ev.type==="def"){sayVO("block");}
     else if(isPen||isOff){sndWhistle();}
-    // miss / def / other: the crowd bed carries it — no extra cue
     lm.shown++;
     render(true);
     await _delay(willCut?1200:1300*MATCH_SPEED);
