@@ -2104,11 +2104,18 @@ function updateHeader(screen){
 // CARD ART — HF FLUX.1-schnell
 // ══════════════════════════════════════════════════════════
 const IN_SANDBOX=location.href.startsWith("about:")||location.hostname==="www.claudeusercontent.com";
-async function fetchPortrait(card){
+// Together's free tier only serves one image generation at a time — firing
+// several fetchPortrait() calls in parallel (e.g. 2+ cards earned in one
+// trivia round) got all but the first rejected/rate-limited. Queue them.
+let _artQueue=Promise.resolve();
+function fetchPortrait(card){
   if(card.portrait||card.portraitLoading)return;
   if(IN_SANDBOX){fallback(card);return;}
   card.portraitLoading=true;
   updatePortraitEl(card.id,"loading",null,card);
+  _artQueue=_artQueue.then(()=>fetchPortraitNow(card));
+}
+async function fetchPortraitNow(card){
   const nat=card.nationality.replace(/[^\w ]/g,"").trim();
   const tier=card.difficulty==="hard"?"elite veteran star":card.difficulty==="medium"?"professional":"young rising talent";
   const pose=ACTION_POSES[card.position]||ACTION_POSES.default;
