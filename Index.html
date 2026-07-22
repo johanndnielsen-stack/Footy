@@ -1417,7 +1417,7 @@ const SND_FILES={
   goal:"sounds/goal.mp3",        // stadium roar (first 3s used on a goal)
   kick:"sounds/kick.mp3",        // ball strike (played pitched-down)
 };
-const CROWD_FILES=["sounds/crowd1.mp3","sounds/crowd2.mp3","sounds/crowd3.mp3"];
+const CROWD_FILES=["sounds/crowd1.mp3"]; // crowd1 only — crowd2/3 dropped per Johann
 const _sbuf={},_sonset={},_crowdBuf={};
 let _sndLoadStarted=false;
 function preloadSounds(){
@@ -1616,7 +1616,7 @@ function crowdStart(){
   _crowdWanted=true; warmVO();
   if(_crowdBed||_crowdPending)return;
   _crowdPending=true;
-  const i=Math.floor(Math.random()*CROWD_FILES.length);
+  const i=0; // Johann: only crowd1 — crowd2/crowd3 skipped
   const go=o=>{ _crowdPending=false; if(_crowdWanted&&!_crowdBed)playCrowdLoop(o); };
   if(_crowdBuf[i])go(_crowdBuf[i]);
   else ensureCrowd(i).then(go).catch(()=>{_crowdPending=false;});
@@ -5404,10 +5404,15 @@ function penDiveGame(opts={}){
   });
 }
 
-async function playScene(kind,ev){
-  const el=document.getElementById("cutscene"); if(!el) return;
+async function playScene(kind,ev,onImpact){
+  // onImpact = the moment-of-impact cue (roar/commentary), fired exactly as the
+  // ball hits — in sync with the scene, never after it. Runs at most once; the
+  // safety nets below guarantee it still fires if the scene can't build or is skipped.
+  let _impactDone=false;
+  const impact=()=>{ if(_impactDone)return; _impactDone=true; try{onImpact&&onImpact();}catch(e){} };
+  const el=document.getElementById("cutscene"); if(!el){impact();return;}
   const gen=_liveGen, alive=()=>state.screen==="livematch"&&gen===_liveGen;
-  const play=buildPlay(kind,ev); if(!play) return;
+  const play=buildPlay(kind,ev); if(!play){impact();return;}
   el.innerHTML=`<div class="cut-bg"></div>
     <div class="cut-pitch">
       <div class="pl-line"></div><div class="pl-circle"></div>
@@ -5423,15 +5428,24 @@ async function playScene(kind,ev){
   el.onclick=finish;
   const ball=el.querySelector("#cutBall");
   const set=(sel,x,y,dur)=>{const n=el.querySelector(sel);if(n){if(dur!=null)n.style.transitionDuration=dur+"ms";n.style.left=x+"%";n.style.top=y+"%";}};
-  for(const s of play.steps){
+  // Decisive frame = the last shot step (ball into the net/post, arriving at 62%
+  // of its travel — the same 0.62 the ball uses), else the last ball move (~90%
+  // in for a block/interception), else the final step. 0.62 is the A/V-sync knob.
+  let impactIdx=play.steps.reduce((r,s,i)=>s.shot?i:r,-1);
+  if(impactIdx<0)impactIdx=play.steps.reduce((r,s,i)=>s.ball?i:r,-1);
+  if(impactIdx<0)impactIdx=play.steps.length-1;
+  for(let si=0;si<play.steps.length;si++){
+    const s=play.steps[si];
     const total=s.dur*CUT_SPEED;
     if(s.shot&&ball)ball.classList.add("shot");
     if(s.ball)set("#cutBall",s.ball.x,s.ball.y,s.shot?Math.round(total*0.62):total);
     (s.moves||[]).forEach(mv=>set("#"+mv.id,mv.x,mv.y,total));
+    if(si===impactIdx)setTimeout(impact,s.shot?Math.round(total*0.62):Math.round(total*0.9));
     await _delay(total);
-    if(done||!alive()){finish();return;}
+    if(done||!alive()){finish();impact();return;}
   }
   _burstTitle(el,play);
+  impact(); // safety: fire by scene end if the impact step somehow didn't schedule it
   await _delay(1600);
   finish();
 }
@@ -5528,18 +5542,24 @@ async function driveLiveMatch(){
       await _delay(1100);
       continue;
     }
-    // Play the cutscene FIRST; the action only lands on the board (sound + score + feed line) afterwards.
+    // The roar/commentary fires at the scene's impact frame (in sync with the
+    // ball); the score + feed line land on the board when the scene finishes.
     const isPen=ev.type==="pen_opp"||ev.type==="pen_opp_save";
     const isOff=ev.type==="off_my"||ev.type==="off_opp";
     const willCut=(ev.type==="goal_my"||ev.type==="goal_opp")||isPen||(isOff&&Math.random()<0.55)||((ev.type==="def"||ev.type==="miss")&&Math.random()<0.6);
-    if(willCut) await playScene(ev.type,ev);
+    const cue=()=>{
+      if(ev.type==="goal_my"){sndGoal();sayVO("goal_yes");}
+      else if(ev.type==="goal_opp"||ev.type==="pen_opp"){sndGoal();sayVO("goal_no");} // opponent scores — same roar + concede call
+      else if(ev.type==="pen_opp_save"){sndGoal();sayVO("keeper");} // keeper hero moment: crowd erupts
+      else if(ev.type==="miss"){sayVO("miss");}
+      else if(ev.type==="def"){sayVO("block");}
+      else if(isOff){sndWhistle();}
+    };
+    if(willCut) await playScene(ev.type,ev,cue); // cue fires mid-scene at ball impact
+    else cue();                                  // no cutscene → fire immediately
     if(!active()){hideCutscene();return;}
-    if(ev.type==="goal_my"){lm.score[0]++;sndGoal();sayVO("goal_yes");}
-    else if(ev.type==="goal_opp"||ev.type==="pen_opp"){lm.score[1]++;sndGoal();sayVO("goal_no");} // opponent scores — same roar + concede call
-    else if(ev.type==="pen_opp_save"){sndGoal();sayVO("keeper");} // keeper hero moment: crowd erupts
-    else if(ev.type==="miss"){sayVO("miss");}
-    else if(ev.type==="def"){sayVO("block");}
-    else if(isPen||isOff){sndWhistle();}
+    if(ev.type==="goal_my")lm.score[0]++;
+    else if(ev.type==="goal_opp"||ev.type==="pen_opp")lm.score[1]++;
     lm.shown++;
     render(true);
     await _delay(willCut?1200:1300*MATCH_SPEED);
