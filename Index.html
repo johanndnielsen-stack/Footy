@@ -99,6 +99,34 @@ svg{display:block;}
 .nav-btn.active .nav-label{font-weight:700;}
 .nav-dot{width:16px;height:2px;border-radius:1px;background:var(--accent);margin-top:1px;}
 
+/* ── NAV TOUR (first-time coach marks) ── */
+#coach-tour{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(4,4,8,0.72);
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+#coach-tour.show{opacity:1;pointer-events:auto;}
+.coach-bubble{
+  position:absolute;max-width:260px;
+  background:var(--surface,#12121c);border:1px solid rgba(0,245,147,.4);
+  border-radius:14px;padding:12px 14px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+  font-family:var(--font-body);
+}
+.coach-bubble .coach-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.coach-bubble .coach-sub{font-size:12px;color:var(--text2,#c8c8d8);line-height:1.4;}
+.coach-bubble .coach-arrow{position:absolute;width:14px;height:14px;background:inherit;border:inherit;transform:rotate(45deg);}
+.coach-top{top:56px;right:16px;border-top-color:transparent;}
+.coach-top .coach-arrow{top:-8px;right:20px;border-bottom:none;border-right:none;}
+.coach-bottom{bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);text-align:center;}
+.coach-bottom .coach-arrow{bottom:-8px;left:50%;margin-left:-7px;border-top:none;border-left:none;}
+.coach-dismiss{
+  margin-top:10px;width:100%;padding:8px;border-radius:8px;border:none;
+  background:var(--accent);color:#08080f;font-weight:700;font-size:12px;cursor:pointer;
+  font-family:var(--font-body);
+}
+
 /* ── NOTIFICATION ── */
 #notif{
   position:fixed;top:20px;left:50%;
@@ -590,6 +618,19 @@ svg{display:block;}
       <span class="nav-label" id="nl-market">Market</span>
     </button>
   </nav>
+  <div id="coach-tour">
+    <div class="coach-bubble coach-top">
+      <div class="coach-arrow"></div>
+      <div class="coach-title" id="coach-top-title">Language &amp; account</div>
+      <div class="coach-sub" id="coach-top-sub">Switch language or manage your account here.</div>
+    </div>
+    <div class="coach-bubble coach-bottom">
+      <div class="coach-arrow"></div>
+      <div class="coach-title" id="coach-bottom-title">Get around</div>
+      <div class="coach-sub" id="coach-bottom-sub">Use these tabs to jump between Trivia, Match, Squad, League and Market.</div>
+      <button class="coach-dismiss" id="coach-dismiss-btn" onclick="dismissNavTour()">Got it!</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -739,6 +780,9 @@ const TRANSLATIONS={
     footer_hint:"Correct answers earn cards · Matches develop players\nLifelines cost 30 pts each",
     install_title:"📲 Install Footy Cards",install_desc:"Add it to your home screen for one-tap access, offline play, and no browser bars.",install_btn:"Install App",
     install_desc_ios:"Tap the Share icon below, then \"Add to Home Screen\", for one-tap access and no browser bars.",
+    coach_top_title:"Language & account",coach_top_sub:"Switch language or manage your account here.",
+    coach_bottom_title:"Get around",coach_bottom_sub:"Use these tabs to jump between Trivia, Match, Squad, League and Market.",
+    coach_got_it:"Got it!",
     win_label:"🏆 WIN",draw_label:"🤝 DRAW",loss_label:"💔 LOSS",
     q_of:"Q{n} of 3",
     correct_msg:"Correct! +{pts} pts",wrong_msg:"❌ Wrong!",
@@ -913,6 +957,9 @@ const TRANSLATIONS={
     footer_hint:"Rigtige svar giver kort · Kampe udvikler spillere\nLivreddere koster 30 pts hver",
     install_title:"📲 Installer Footy Cards",install_desc:"Tilføj den til din startskærm for adgang med ét tryk, offline-spil og ingen browser-bjælker.",install_btn:"Installer App",
     install_desc_ios:"Tryk på Del-ikonet nedenfor, og vælg \"Føj til hjemmeskærm\" for adgang med ét tryk og ingen browser-bjælker.",
+    coach_top_title:"Sprog & konto",coach_top_sub:"Skift sprog eller administrer din konto her.",
+    coach_bottom_title:"Kom rundt",coach_bottom_sub:"Brug disse faner til at skifte mellem Quiz, Kamp, Hold, Liga og Marked.",
+    coach_got_it:"Forstået!",
     win_label:"🏆 SEJR",draw_label:"🤝 UAFGJORT",loss_label:"💔 TAB",
     q_of:"S{n} af 3",
     correct_msg:"Korrekt! +{pts} pts",wrong_msg:"❌ Forkert!",
@@ -1087,6 +1134,9 @@ const TRANSLATIONS={
     footer_hint:"Respuestas correctas dan cartas · Los partidos desarrollan jugadores\nLos comodines cuestan 30 pts cada uno",
     install_title:"📲 Instalar Footy Cards",install_desc:"Añádela a tu pantalla de inicio para acceso con un toque, juego sin conexión y sin barras del navegador.",install_btn:"Instalar App",
     install_desc_ios:"Toca el icono Compartir de abajo y luego \"Añadir a pantalla de inicio\" para acceso con un toque y sin barras del navegador.",
+    coach_top_title:"Idioma y cuenta",coach_top_sub:"Cambia el idioma o gestiona tu cuenta aquí.",
+    coach_bottom_title:"Muévete por la app",coach_bottom_sub:"Usa estas pestañas para pasar entre Trivia, Partido, Equipo, Liga y Mercado.",
+    coach_got_it:"¡Entendido!",
     win_label:"🏆 VICTORIA",draw_label:"🤝 EMPATE",loss_label:"💔 DERROTA",
     q_of:"P{n} de 3",
     correct_msg:"¡Correcto! +{pts} pts",wrong_msg:"❌ ¡Incorrecto!",
@@ -2124,6 +2174,11 @@ function updateHeader(screen){
   document.getElementById("header-title").textContent=_title;
   document.getElementById("header-pts").textContent=state.points;
   const _lb=document.getElementById("lang-btn");if(_lb)_lb.textContent="🌐 "+_lang;
+  const _ctt=document.getElementById("coach-top-title");if(_ctt)_ctt.textContent=t('coach_top_title');
+  const _cts=document.getElementById("coach-top-sub");if(_cts)_cts.textContent=t('coach_top_sub');
+  const _cbt=document.getElementById("coach-bottom-title");if(_cbt)_cbt.textContent=t('coach_bottom_title');
+  const _cbs=document.getElementById("coach-bottom-sub");if(_cbs)_cbs.textContent=t('coach_bottom_sub');
+  const _cdb=document.getElementById("coach-dismiss-btn");if(_cdb)_cdb.textContent=t('coach_got_it');
   // Transparent header on home so video shows through
   const hdr=document.getElementById("header");
   if(screen==="home"){
@@ -6115,6 +6170,15 @@ function installApp(){
   deferredInstallPrompt.userChoice.finally(()=>{deferredInstallPrompt=null;render();});
 }
 function dismissInstallBanner(){installDismissed=true;render();}
+
+function dismissNavTour(){
+  localStorage.setItem("footy_nav_tour_seen","1");
+  const el=document.getElementById("coach-tour");if(el)el.classList.remove("show");
+}
+if(!localStorage.getItem("footy_nav_tour_seen")){
+  const el=document.getElementById("coach-tour");
+  if(el){el.classList.add("show");el.addEventListener("click",e=>{if(e.target.id==="coach-tour")dismissNavTour();});}
+}
 </script>
 </body>
 </html>
