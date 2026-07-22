@@ -6,6 +6,9 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="theme-color" content="#08080f"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="icons/icon-192.png"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
 <title>Footy Cards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -518,12 +521,12 @@ svg{display:block;}
   box-shadow:0 0 24px rgba(160,200,255,.14),inset 0 0 30px rgba(0,0,0,.3);}
 .pg-goal.ripple{animation:cutRipple .1s steps(2,end) 5;}
 .pg-keeper{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:transform .5s cubic-bezier(.3,0,.4,1);z-index:3;}
-.pg-keeper .pg-kbody{width:10px;height:24px;background:linear-gradient(#f59e0b,#b45309);border-radius:4px;margin-top:-3px;}
+.pg-keeper .pg-kbody{width:18px;height:42px;background:linear-gradient(#f59e0b,#b45309);border-radius:5px;margin-top:-4px;}
 .pg-keeper.idle{animation:pgKIdle 1.6s ease-in-out infinite;}
-@keyframes pgKIdle{0%,100%{transform:translateX(-50%) translateY(0)}25%{transform:translateX(calc(-50% - 9px)) translateY(-3px)}75%{transform:translateX(calc(-50% + 9px)) translateY(-3px)}}
-.pg-keeper.dL{animation:none;transform:translateX(calc(-50% - 76px)) translateY(-10px) rotate(-56deg);}
-.pg-keeper.dR{animation:none;transform:translateX(calc(-50% + 76px)) translateY(-10px) rotate(56deg);}
-.pg-keeper.dC{animation:none;transform:translateX(-50%) translateY(-26px);}
+@keyframes pgKIdle{0%,100%{transform:translateX(-50%) translateY(0)}25%{transform:translateX(calc(-50% - 12px)) translateY(-4px)}75%{transform:translateX(calc(-50% + 12px)) translateY(-4px)}}
+.pg-keeper.dL{animation:none;transform:translateX(calc(-50% - 92px)) translateY(-14px) rotate(-56deg);}
+.pg-keeper.dR{animation:none;transform:translateX(calc(-50% + 92px)) translateY(-14px) rotate(56deg);}
+.pg-keeper.dC{animation:none;transform:translateX(-50%) translateY(-34px);}
 .pg-ret{position:absolute;width:36px;height:36px;margin:-18px 0 0 -18px;z-index:4;pointer-events:none;}
 .pg-ret::before{content:'';position:absolute;inset:0;border:3px solid var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accentGlow),inset 0 0 8px var(--accentGlow);}
 .pg-ret::after{content:'';position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--accent);border-radius:50%;}
@@ -1263,6 +1266,7 @@ const BOT_NAMES=["⚡ BlazeBot","🤖 TactiBot","🦾 IronFC","🌀 VortexAI","�
 const DIFF_COLORS={easy:"#00f593",medium:"#a78bfa",hard:"#f59e0b"};
 const DIFF_PTS={easy:10,medium:25,hard:50};
 const LEGEND_CHANCE=0.25; // chance a perfect trivia round's hard question actually pays out a Legend card
+const PEN_MIN_MINUTE=23; // no penalty/free-kick before the 1/4 mark of a 90-minute match
 const START_PTS=150; // starting balance for brand-new players (existing saves keep theirs)
 const XP_PER_LEVEL=100;
 const ACHIEVEMENTS={
@@ -1342,17 +1346,18 @@ function decorateMatchEvents(events,ctx){
   const gk=(state.team||[]).find(c=>c.position==="GK");
   events.forEach(ev=>{
     const min=minOf(ev), r=Math.random();
+    const early=min<PEN_MIN_MINUTE;
     if(ev.type==="goal_my"&&ev.scorerId&&nameOf(ev.scorerId)){
-      if(pensOn&&r<0.12){ev.type="pen_my";ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
-      else if(r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
+      if(pensOn&&!early&&r<0.12){ev.type="pen_my";ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
+      else if(!early&&r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${nameOf(ev.scorerId)} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
     } else if(ev.type==="goal_opp"){
-      if(pensOn&&r<0.10){ev.type="pen_opp";ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
-      else if(r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
-    } else if(ev.type==="miss"&&pensOn&&r<0.02&&ev.playerId&&nameOf(ev.playerId)){
+      if(pensOn&&!early&&r<0.10){ev.type="pen_opp";ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`;}
+      else if(!early&&r<0.22){ev.fk=true;ev.text=`${min}' ⚽ ${oppName} ${rf(actLang(FK_GOAL_ACTIONS))}`;}
+    } else if(ev.type==="miss"&&pensOn&&!early&&r<0.02&&ev.playerId&&nameOf(ev.playerId)){
       // Kept rare: the miss pool is ~3× the goal pool, so a higher rate would
       // make penalty conversion feel unfairly low (target ≈70–75% like real life).
       ev.type="pen_my_miss";ev.text=`${min}' 🧤 ${nameOf(ev.playerId)} ${rf(actLang(PEN_MISS_ACTIONS))}`;
-    } else if(ev.type==="def"&&pensOn&&r<0.04&&gk){
+    } else if(ev.type==="def"&&pensOn&&!early&&r<0.04&&gk){
       ev.type="pen_opp_save";ev.playerId=gk.id;ev.text=`${min}' 🧤 ${gk.name.split(" ")[1]} ${rf(actLang(PEN_SAVE_ACTIONS))}`;
     }
   });
@@ -2332,16 +2337,17 @@ function simulateMatch(myTeam,oppTeam,oppName,tacBonus=0){
     }
   }
   // Standalone spot kicks (local matches only — this engine never runs friend
-  // fixtures): either side can win a penalty at ANY minute, including the 1st.
+  // fixtures): either side can win a penalty, but never before the 1/4 mark
+  // (PEN_MIN_MINUTE) — a penalty in the first few minutes felt cheap.
   if(state.pens){
     if(Math.random()<0.25){
       const sc=rf(weightedAttackers.length?weightedAttackers:all);
-      const scored=Math.random()<0.72, min=ri(1,90);
+      const scored=Math.random()<0.72, min=ri(PEN_MIN_MINUTE,90);
       if(scored){myG++;pEv[sc.id]=pEv[sc.id]||{g:0,a:0};pEv[sc.id].g++;}
       events.push({type:scored?"pen_my":"pen_my_miss",scorerId:sc.id,text:`${min}' ${scored?"⚽":"🧤"} ${sc.name} ${rf(actLang(scored?PEN_GOAL_ACTIONS:PEN_MISS_ACTIONS))}`});
     }
     if(Math.random()<0.18){
-      const scored=Math.random()<0.68, min=ri(1,90);
+      const scored=Math.random()<0.68, min=ri(PEN_MIN_MINUTE,90);
       const gk=myTeam.find(c=>c.position==="GK");
       if(scored){oppG++;events.push({type:"pen_opp",text:`${min}' ⚽ ${oppName} ${rf(actLang(PEN_GOAL_ACTIONS))}`});}
       else if(gk)events.push({type:"pen_opp_save",playerId:gk.id,text:`${min}' 🧤 ${gk.name.split(" ")[1]} ${rf(actLang(PEN_SAVE_ACTIONS))}`});
@@ -5247,7 +5253,7 @@ function penMiniGame(opts={}){
       <div class="pg-wrap" id="pgWrap">
         <div class="pg-crowd"></div><div class="pg-flood"></div>
         <div class="pg-goal" id="pgGoal">
-          <div class="pg-keeper idle" id="pgKeeper">${opts.keeper?avSVG(opts.keeper,34):'<div style="font-size:24px;">🧤</div>'}<div class="pg-kbody"></div></div>
+          <div class="pg-keeper idle" id="pgKeeper">${opts.keeper?avSVG(opts.keeper,60):'<div style="font-size:24px;">🧤</div>'}<div class="pg-kbody"></div></div>
           <div class="pg-ret" id="pgRet"></div>
         </div>
         <div class="pg-taker" id="pgTaker">${opts.taker?avSVG(opts.taker,42):""}</div>
@@ -5373,7 +5379,7 @@ function penDiveGame(opts={}){
       <div class="pg-wrap" id="pgWrap">
         <div class="pg-crowd"></div><div class="pg-flood"></div>
         <div class="pg-goal" id="pgGoal">
-          <div class="pg-keeper idle" id="pgKeeper">${opts.keeper?avSVG(opts.keeper,34):'<div style="font-size:24px;">🧤</div>'}<div class="pg-kbody"></div></div>
+          <div class="pg-keeper idle" id="pgKeeper">${opts.keeper?avSVG(opts.keeper,60):'<div style="font-size:24px;">🧤</div>'}<div class="pg-kbody"></div></div>
           <div class="pg-dive-zone" data-z="0" style="left:2%;width:30%;">◤</div>
           <div class="pg-dive-zone" data-z="1" style="left:35%;width:30%;">⬆</div>
           <div class="pg-dive-zone" data-z="2" style="left:68%;width:30%;">◥</div>
@@ -5839,6 +5845,10 @@ render();
 // Verify purchases only after auto-login: the cloud save is applied there and
 // would overwrite a grant that happened before it.
 autoLoginBoot().finally(()=>verifyPendingPurchase());
+
+if("serviceWorker" in navigator && !IN_SANDBOX){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(e=>console.warn("SW register failed:",e)));
+}
 </script>
 </body>
 </html>
