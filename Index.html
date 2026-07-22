@@ -5754,8 +5754,11 @@ async function refreshTrades(){
   if(!state.account)return;
   try{
     const d=await tradeApi("list",{});
-    state.tradeList=d.trades||[];
-    const mine=state.tradeList.filter(tr=>tr.status==="accepted"&&tr.from_username.toLowerCase()===state.account.username.toLowerCase());
+    const newList=d.trades||[];
+    const listChanged=JSON.stringify(newList)!==JSON.stringify(state.tradeList);
+    state.tradeList=newList;
+    const mine=newList.filter(tr=>tr.status==="accepted"&&tr.from_username.toLowerCase()===state.account.username.toLowerCase());
+    let settled=false;
     if(mine.length){
       // Don't hand-reconstruct the swap client-side — pull the account's
       // already-correct post-trade collection/team straight from the server
@@ -5769,9 +5772,19 @@ async function refreshTrades(){
         tr.status="done";
       }
       saveState();
+      settled=true;
+    }
+    // Only re-render if something a screen actually shows has changed — a
+    // blind render(true) on every poll was tearing down and rebuilding the
+    // whole screen (including mid-typed inputs like the trade search box)
+    // every time the Trade screen was opened, even when nothing was new.
+    if(settled||(listChanged&&state.screen==="trade")){
+      const searchVal=document.getElementById("trade-search-user")?.value||"";
+      render(true);
+      const input=document.getElementById("trade-search-user");
+      if(input&&searchVal)input.value=searchVal;
     }
   }catch(e){console.warn("refreshTrades failed:",e);}
-  render(true);
 }
 async function browseTradePartner(){
   const input=document.getElementById("trade-search-user");
